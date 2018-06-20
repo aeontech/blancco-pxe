@@ -16,9 +16,9 @@ _good() { echo -e "${GREEN}${BOLD}Success: ${UNBOLD}${@}${NORMAL}"; }
 
 install() {
   if [[ ! -z $YUM_CMD ]]; then
-    echo yum install -y $@
+    yum install -y $@
   elif [[ ! -z $APTGET_CMD ]]; then
-    echo apt-get install -y $@
+    apt-get install -y $@
   else
     _err "Install could not determine package manager"
     exit 0
@@ -27,9 +27,9 @@ install() {
 
 update () {
   if [[ ! -z $YUM_CMD ]]; then
-    echo yum makecache fast && yum upgrade -y
+    yum makecache fast && yum upgrade -y
   elif [[ ! -z $APTGET_CMD ]]; then
-    echo apt-get update -y && apt-get upgrade -y
+    apt-get update -y && apt-get upgrade -y
   else
     _err "Update could not determine package manager"
     exit 0
