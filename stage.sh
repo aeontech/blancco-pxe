@@ -42,12 +42,12 @@ update () {
 update   # updates system
 install python git
 
-pushd . > /dev/null
+pushd . 2>&1 /dev/null
 cd ~
 git clone https://github.com/aeontechnology/blancco-pxe.git
 cd blancco-pxe
 python stage.py
-popd > /dev/null
+popd 2>&1 /dev/null
 
 _info "Cleaning up..."
 # Do all our removals...
