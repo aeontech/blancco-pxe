@@ -1,18 +1,20 @@
 #!/bin/bash
 
-YUM_CMD=$(which yum)
-APTGET_CMD=$(which apt-get)
+YUM_CMD=$(which yum 2> /dev/null)
+APTGET_CMD=$(which apt-get 2> /dev/null)
 
 BOLD="\e[1m"
 UNBOLD="\e[22m"
 NORMAL="\e[0m"
-RED="\e[0;31m"
+RED="\e[1;31m"
 YELLOW="\e[1;33m"
 GREEN="\e[1;32m"
+BLUE="\e[1;34m"
 
 _err()  { echo -e "${RED}${BOLD}Error: ${UNBOLD}${@}${NORMAL}"; }
 _warn() { echo -e "${YELLOW}${BOLD}Warning: ${UNBOLD}${@}${NORMAL}"; }
 _good() { echo -e "${GREEN}${BOLD}Success: ${UNBOLD}${@}${NORMAL}"; }
+_info() { echo -e "${BLUE}${BOLD}Info: ${UNBOLD}${@}${NORMAL}"; }
 
 install() {
   if [[ ! -z $YUM_CMD ]]; then
@@ -47,4 +49,6 @@ cd blancco-pxe
 python stage.py
 popd
 
+_info "Cleaning up..."
+# Do all our removals...
 _good "Installation complete. Please ensure there were no errors above."
