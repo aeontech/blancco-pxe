@@ -45,6 +45,7 @@ install python git
 pushd . 2>&1 /dev/null
 cd ~
 git clone https://github.com/aeontechnology/blancco-pxe.git
+          git checkout develop
 cd blancco-pxe
 python stage.py
 popd 2>&1 /dev/null
