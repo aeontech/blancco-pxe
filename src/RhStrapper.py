@@ -46,7 +46,7 @@ class RhStrapper(LinuxStrapper):
             if not self._is_installed(yb, pkgname):
                 log.warn('Marking package "%s" for installation' % pkgname)
                 yb.install(pkg)
-            else
+            else:
                 log.debug('Package "%s" already installed - skipping' % pkgname)
 
             # Installed, or marked for install
