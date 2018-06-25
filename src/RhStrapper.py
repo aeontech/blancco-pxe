@@ -3,7 +3,7 @@ import log
 from LinuxStrapper import LinuxStrapper
 
 class RhStrapper(LinuxStrapper):
-    packages = "".split(" ")
+    packages = "tftp tftp-server xinetd nginx dhcpd".split(" ")
 
     def install_packages(self):
         yb = yum.YumBase()
@@ -18,11 +18,15 @@ class RhStrapper(LinuxStrapper):
             yb.buildTransaction()
             yb.processTransaction()
 
+            # We just added a repo - clear cache
+            yb.cleanHeaders()
+            yb.cleanMetadata()
+
             for package in self.packages:
                 self._mark_install(yb, package)
 
-            # yb.buildTransaction()
-            # yb.processTransaction()
+            yb.buildTransaction()
+            yb.processTransaction()
         finally:
             yb.doUnlock()
 
