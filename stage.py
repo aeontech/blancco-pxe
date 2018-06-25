@@ -11,4 +11,6 @@ try:
     strapper.configure_packages()
 except EnvironmentError:
     log.error(sys.exc_info()[1])
-    exit()
+    exit(1)
+
+exit(0)
