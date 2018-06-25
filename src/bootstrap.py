@@ -2,7 +2,7 @@ import os
 import platform
 
 rh_dists = [
-    "CentOS",
+    "CentOS Linux",
     "Red Hat Enterprise Linux Server"
 ]
 
@@ -21,8 +21,8 @@ def get_strapper():
     if os.name == "posix" and platform.linux_distribution()[0] in deb_dists:
         return _get_deb_strapper()
 
-    raise EnvironmentError('Unknown environment ' + os.name + ' with dist ' +
-        platform.linux_distribution())
+    raise EnvironmentError('Unknown environment ' + os.name + ' with dist %r' %
+        platform.linux_distribution()[0])
 
 def _get_win_strapper():
     print "Windows strapper"
