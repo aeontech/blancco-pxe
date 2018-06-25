@@ -9,11 +9,9 @@ class LinuxStrapper:
         if os.getuid() != 0:
             raise EnvironmentError("Not admin - could not elevate privileges!")
 
-    @abstractmethod
     def install_packages(self):
         pass
 
-    @abstractmethod
     def configure_packages(self):
         pass
 
