@@ -1,6 +1,5 @@
 import os
 import platform
-from DebStrapper import DebStrapper
 
 rh_dists = [
     "CentOS",
@@ -32,4 +31,5 @@ def _get_rh_strapper():
     print "RH strapper"
 
 def _get_deb_strapper():
+    from DebStrapper import DebStrapper
     return DebStrapper()
