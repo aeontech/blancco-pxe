@@ -37,7 +37,7 @@ class RhStrapper(LinuxStrapper):
                 self.yb.resolveDeps()
                 rc, msgs = self.yb.buildTransaction()
                 if rc == 2:
-                    self.yb.processTransaction()
+                    self.yb.processTransaction(rpmTestDisplay=cb, rpmDisplay=cb)
 
         finally:
             self.yb.doUnlock()
