@@ -19,7 +19,7 @@ class RhStrapper(LinuxStrapper):
             self.yb.doLock()
 
             # First off, we need epel-release
-            if not self._is_installed("epel-release")
+            if not self._is_installed("epel-release"):
                 self._mark_install('epel-release')
                 rc, msgs = self.yb.buildTransaction()
                 if rc != 2:
@@ -39,11 +39,11 @@ class RhStrapper(LinuxStrapper):
             for package in self.packages:
                 self._mark_install(package)
 
-            self.yb.resolveDeps()
-            rc, msgs = self.yb.buildTransaction()
-            if rc != 2:
-                print "nope"
-                return False
+                self.yb.resolveDeps()
+                rc, msgs = self.yb.buildTransaction()
+                if rc != 2:
+                    print "nope"
+                    return False
 
             try:
                 self.yb.processTransaction()
