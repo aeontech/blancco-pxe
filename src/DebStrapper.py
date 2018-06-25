@@ -1,9 +1,8 @@
 import apt
-import os
 import sys
 import log
 from shutil import copy
-from src import LinuxStrapper
+from LinuxStrapper import LinuxStrapper
 
 class DebStrapper(LinuxStrapper):
     packages = "tftp tftpd xinetd nginx isc-dhcp-server".split(" ")

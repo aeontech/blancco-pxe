@@ -1,5 +1,5 @@
 import yum
-from src import LinuxStrapper
+from LinuxStrapper import LinuxStrapper
 
 class RhStrapper(LinuxStrapper):
     packages = "".split(" ")

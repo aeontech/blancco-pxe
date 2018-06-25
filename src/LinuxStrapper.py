@@ -1,3 +1,7 @@
+import os
+import log
+import sys
+
 class LinuxStrapper:
     def checkenv(self):
         # Check for sudo privs
