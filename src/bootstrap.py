@@ -25,10 +25,12 @@ def get_strapper():
         platform.linux_distribution()[0])
 
 def _get_win_strapper():
-    print "Windows strapper"
+    from WinStrapper import WinStrapper
+    return WinStrapper()
 
 def _get_rh_strapper():
-    print "RH strapper"
+    from RhStrapper import RhStrapper
+    return RhStrapper()
 
 def _get_deb_strapper():
     from DebStrapper import DebStrapper
