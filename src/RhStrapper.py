@@ -24,6 +24,7 @@ class RhStrapper(LinuxStrapper):
                 rc, msgs = self.yb.buildTransaction()
                 if rc == 2:
                     self.yb.processTransaction(rpmTestDisplay=cb, rpmDisplay=cb)
+                    log.success('Successfully installed package "epel-release"')
                 else:
                     return False
 
@@ -38,6 +39,7 @@ class RhStrapper(LinuxStrapper):
                 rc, msgs = self.yb.buildTransaction()
                 if rc == 2:
                     self.yb.processTransaction(rpmTestDisplay=cb, rpmDisplay=cb)
+                    log.success('Successfully installed package "%s"' % pkgname)
 
         finally:
             self.yb.doUnlock()
