@@ -24,7 +24,7 @@ class RhStrapper(LinuxStrapper):
                 rc, msgs = self.yb.buildTransaction()
                 if rc == 2:
                     self.yb.processTransaction(rpmTestDisplay=cb, rpmDisplay=cb)
-                else
+                else:
                     return False
 
                 # We just added a repo - clear cache
