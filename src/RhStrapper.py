@@ -14,7 +14,7 @@ class RhStrapper(LinuxStrapper):
             # First off, we need epel-release
             epel = yum.searchGenerator(['name'], ['epel-release'])
             print "%r" % epel
-        else:
+        finally:
             yum.doUnlock()
 
     def configure_packages(self):
