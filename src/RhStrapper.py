@@ -22,14 +22,9 @@ class RhStrapper(LinuxStrapper):
             if not self._is_installed("epel-release"):
                 self._mark_install('epel-release')
                 rc, msgs = self.yb.buildTransaction()
-                if rc != 2:
-                    print "nope"
-                    return False
-
-                try:
+                if rc == 2:
                     self.yb.processTransaction(rpmTestDisplay=cb, rpmDisplay=cb)
-                except:
-                    print "wtf"
+                else
                     return False
 
                 # We just added a repo - clear cache
@@ -41,15 +36,9 @@ class RhStrapper(LinuxStrapper):
 
                 self.yb.resolveDeps()
                 rc, msgs = self.yb.buildTransaction()
-                if rc != 2:
-                    print "nope"
-                    return False
+                if rc == 2:
+                    self.yb.processTransaction()
 
-            try:
-                self.yb.processTransaction()
-            except:
-                print "wtf"
-                return False
         finally:
             self.yb.doUnlock()
 
