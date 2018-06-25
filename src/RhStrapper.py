@@ -43,7 +43,7 @@ class RhStrapper(LinuxStrapper):
             if matched_keys[0] != pkgname:
                 continue
 
-            if Not self._is_installed(yb, pkgname):
+            if not self._is_installed(yb, pkgname):
                 log.warn('Marking package "%s" for installation' % pkgname)
                 yb.install(pkg)
             else
