@@ -43,6 +43,7 @@ class RhStrapper(LinuxStrapper):
 
         # Loop through to find the correct package
         for (pkg, matched_value, matched_keys) in matching:
+            # Not this one - skip
             if matched_keys[0] != pkgname:
                 continue
 
@@ -56,23 +57,24 @@ class RhStrapper(LinuxStrapper):
 
             self.yb.install(pkg)
             self.yb.resolveDeps()
+
             rc, msgs = self.yb.buildTransaction()
+            if rc != 2:
+                break
 
-            if rc == 2:
-                try:
-                    self.yb.processTransaction(rpmTestDisplay=self.cb, rpmDisplay=self.cb)
-                    log.success('Successfully installed package "%s"' % pkgname)
+            try:
+                self.yb.processTransaction(rpmTestDisplay=self.cb, rpmDisplay=self.cb)
+                log.success('Successfully installed package "%s"' % pkgname)
 
-                    # Now we're installed, let's end the loop
-                    return True
-                except:
-                    pass
-
-            # Uh-oh, there was an error during installation
-            return False
+                # Now we're installed, let's end the loop
+                return True
+            except:
+                pass
         else:
             log.error('Package "%s" has no installation target!' % pkgname)
-            return False
+
+        # Uh-oh, there was an error during installation
+        return False
 
     def _is_installed(self, pkgname):
         pkgs = self.yb.rpmdb.returnPackages()
