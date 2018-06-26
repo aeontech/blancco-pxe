@@ -28,9 +28,14 @@ class RhStrapper(LinuxStrapper):
                 self.yb.getReposFromConfigFile('/etc/yum.repos.d/epel.repo')
                 self.yb.repos.enableRepo('epel')
 
+                # Test to ensure EPEL is enabled
+                for repo in self.yb.repos.repos.values():
+                    if repo.id == 'epel' && not repo.isEnabled():
+                        raise EnvironmentError('Failed to enable EPEL repository')
+
             for package in self.packages:
                 if not self._install(package):
-                    raise RuntimeError('Failed to install package "%s"' % package)
+                    raise EnvironmentError('Failed to install package "%s"' % package)
 
         finally:
             self.yb.doUnlock()
