@@ -31,6 +31,8 @@ class RhStrapper(LinuxStrapper):
                 # We just added a repo - clear cache
                 self.yb.cleanHeaders()
                 self.yb.cleanMetadata()
+            else:
+                log.debug('Package "epel-release" already installed - skipping')
 
             for package in self.packages:
                 self._mark_install(package)
