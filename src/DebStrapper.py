@@ -1,7 +1,6 @@
 import apt
 import sys
 import log
-from shutil import copy
 from LinuxStrapper import LinuxStrapper
 
 class DebStrapper(LinuxStrapper):

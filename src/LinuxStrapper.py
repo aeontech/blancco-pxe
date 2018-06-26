@@ -1,6 +1,7 @@
 import os
 import log
 import sys
+from shutil import copy
 
 class LinuxStrapper:
     def checkenv(self):
