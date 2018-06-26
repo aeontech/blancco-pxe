@@ -6,42 +6,27 @@ from LinuxStrapper import LinuxStrapper
 class RhStrapper(LinuxStrapper):
     packages = "tftp tftp-server xinetd nginx dhcp".split(" ")
     yb = None
+    # No output callback - let's make things clean
+    cb = yum.rpmtrans.NoOutputCallBack()
+
 
     def __init__(self):
         self.yb = yum.YumBase()
         self.yb.conf.cache = False
 
     def install_packages(self):
-        # No output callback - let's make things clean
-        cb = yum.rpmtrans.NoOutputCallBack()
-
         try:
             self.yb.doLock()
 
             # First off, we need epel-release
-            if not self._is_installed("epel-release"):
-                self._mark_install('epel-release')
-                rc, msgs = self.yb.buildTransaction()
-                if rc == 2:
-                    self.yb.processTransaction(rpmTestDisplay=cb, rpmDisplay=cb)
-                    log.success('Successfully installed package "epel-release"')
-                else:
-                    return False
-
-                # We just added a repo - clear cache
+            if self._install('epel-release'):
+                # We just added a repo - clear cache? Enable? What do we do?
                 self.yb.cleanHeaders()
                 self.yb.cleanMetadata()
-            else:
-                log.debug('Package "epel-release" already installed - skipping')
 
             for package in self.packages:
-                self._mark_install(package)
-
-                self.yb.resolveDeps()
-                rc, msgs = self.yb.buildTransaction()
-                if rc == 2:
-                    self.yb.processTransaction(rpmTestDisplay=cb, rpmDisplay=cb)
-                    log.success('Successfully installed package "%s"' % pkgname)
+                if not self._install(package):
+                    raise RuntimeException('Failed to install package "%s"' % package)
 
         finally:
             self.yb.doUnlock()
@@ -52,20 +37,38 @@ class RhStrapper(LinuxStrapper):
     def _mark_install(self, pkgname):
         matching = self.yb.searchGenerator(['name'], [pkgname], False, True)
 
+        # Loop through to find the correct package
         for (pkg, matched_value, matched_keys) in matching:
             if matched_keys[0] != pkgname:
                 continue
 
-            if not self._is_installed(pkgname):
-                log.warn('Marking package "%s" for installation' % pkgname)
-                self.yb.install(pkg)
-            else:
+            # If we're already installed, end the loop
+            if self._is_installed(pkgname):
                 log.debug('Package "%s" already installed - skipping' % pkgname)
+                break
 
-            # Installed, or marked for install
-            break
+            # We're not installed - so let's do that
+            log.warn('Marking package "%s" for installation' % pkgname)
+
+            self.yb.install(pkg)
+            self.yb.resolveDeps()
+            rc, msgs = self.yb.buildTransaction()
+
+            if rc == 2:
+                try:
+                    self.yb.processTransaction(rpmTestDisplay=self.cb, rpmDisplay=self.cb)
+                    log.success('Successfully installed package "%s"' % pkgname)
+
+                    # Now we're installed, let's end the loop
+                    return True
+                except:
+                    pass
+
+            # Uh-oh, there was an error during installation
+            return False
         else:
             log.error('Package "%s" has no installation target!' % pkgname)
+            return False
 
     def _is_installed(self, pkgname):
         pkgs = self.yb.rpmdb.returnPackages()
