@@ -20,18 +20,21 @@ class RhStrapper(LinuxStrapper):
 
             # First off, we need epel-release
             if self._install('epel-release'):
-                # We just added a repo - clear cache? Enable? What do we do?
-                self.yb.cleanHeaders()
-                self.yb.cleanMetadata()
-
                 # Read EPEL config + enable the repo
                 self.yb.getReposFromConfigFile('/etc/yum.repos.d/epel.repo')
                 self.yb.repos.enableRepo('epel')
 
+                # Add repo to the package sack
+                self.yb.repos.populateSack('epel')
+
                 # Test to ensure EPEL is enabled
                 for repo in self.yb.repos.repos.values():
-                    if repo.id == 'epel' && not repo.isEnabled():
+                    if repo.id == 'epel' and not repo.isEnabled():
                         raise EnvironmentError('Failed to enable EPEL repository')
+
+                # We just added a repo - clear cache
+                self.yb.cleanHeaders()
+                self.yb.cleanMetadata()
 
             for package in self.packages:
                 if not self._install(package):
@@ -55,7 +58,7 @@ class RhStrapper(LinuxStrapper):
             # If we're already installed, end the loop
             if self._is_installed(pkgname):
                 log.debug('Package "%s" already installed - skipping' % pkgname)
-                break
+                return True
 
             # We're not installed - so let's do that
             log.warn('Marking package "%s" for installation' % pkgname)
