@@ -24,6 +24,10 @@ class RhStrapper(LinuxStrapper):
                 self.yb.cleanHeaders()
                 self.yb.cleanMetadata()
 
+                # Read EPEL config + enable the repo
+                self.yb.getReposFromConfigFile('/etc/yum.repos.d/epel.repo')
+                self.yb.repos.enableRepo('epel')
+
             for package in self.packages:
                 if not self._install(package):
                     raise RuntimeException('Failed to install package "%s"' % package)
