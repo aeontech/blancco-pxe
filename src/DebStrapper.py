@@ -20,35 +20,13 @@ class DebStrapper(LinuxStrapper):
                 continue
             else:
                 log.warn('Marking package "%s" for installation' % pkg)
-                continue
-
                 pkg.mark_install()
+                continue
 
         try:
             log.info('Installing packages...')
             cache.commit()
             log.success('Successfully installed packages')
         except Exception, arg:
-            print >> sys.stderr, "Sorry, package installation failed [{err}]".format(err=str(arg))
-            raise RuntimeException("Package installation failed: err")
-
-    def configure_packages(self):
-        log.info("Configuring Packages...")
-        self._configure_tftpd()
-        self._configure_xinetd()
-        self._configure_nginx()
-        self._configure_dhcpd()
-
-    def _configure_tftpd(self):
-        copy('assets/nginx.conf', '/etc/nginx/nginx.conf')
-        # chmod?
-        # selinux? restorecon?
-
-    def _configure_xinetd(self):
-        pass
-
-    def _configure_nginx(self):
-        pass
-
-    def _configure_dhcpd(self):
-        pass
+            print >> sys.stderr, "Sorry, package installation failed: %s" % str(arg)
+            raise RuntimeError("Package installation failed: %s" % str(arg)), None, sys.exc_info()[2]
