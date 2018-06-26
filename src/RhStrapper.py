@@ -30,7 +30,7 @@ class RhStrapper(LinuxStrapper):
 
             for package in self.packages:
                 if not self._install(package):
-                    raise RuntimeException('Failed to install package "%s"' % package)
+                    raise RuntimeError('Failed to install package "%s"' % package)
 
         finally:
             self.yb.doUnlock()
