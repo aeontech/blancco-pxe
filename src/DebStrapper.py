@@ -24,11 +24,13 @@ class DebStrapper(LinuxStrapper):
 
                 pkg.mark_install()
 
-#        try:
-#            cache.commit()
-#        except Exception, arg:
-#            print >> sys.stderr, "Sorry, package installation failed [{err}]".format(err=str(arg))
-#            raise RuntimeException("Package installation failed: err")
+        try:
+            log.info('Installing packages...')
+            cache.commit()
+            log.success('Successfully installed packages')
+        except Exception, arg:
+            print >> sys.stderr, "Sorry, package installation failed [{err}]".format(err=str(arg))
+            raise RuntimeException("Package installation failed: err")
 
     def configure_packages(self):
         log.info("Configuring Packages...")
