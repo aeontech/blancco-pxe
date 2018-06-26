@@ -18,9 +18,9 @@ _info() { echo -e "${BLUE}${BOLD}Info: ${UNBOLD}${@}${NORMAL}"; }
 
 install() {
   if [[ ! -z $YUM_CMD ]]; then
-    yum install -y git python python2-pip
+    yum install -y git python
   elif [[ ! -z $APTGET_CMD ]]; then
-    apt-get install -y git python python-pip python-apt
+    apt-get install -y git python python-apt
   else
     _err "Install could not determine package manager"
     exit 0
