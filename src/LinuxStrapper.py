@@ -25,6 +25,7 @@ class LinuxStrapper:
 
     def configure_startup(self):
         # enable & start
+        pass
 
     def _configure_tftpd(self):
         pass
