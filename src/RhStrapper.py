@@ -38,7 +38,7 @@ class RhStrapper(LinuxStrapper):
     def configure_packages(self):
         pass
 
-    def _mark_install(self, pkgname):
+    def _install(self, pkgname):
         matching = self.yb.searchGenerator(['name'], [pkgname], False, True)
 
         # Loop through to find the correct package
