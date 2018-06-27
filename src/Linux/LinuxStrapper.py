@@ -1,9 +1,10 @@
 import os
 import abc
-from .. import log
+import log
 import sys
 from shutil import copy
 import systemd
+import sysctl
 
 class LinuxStrapper:
     def checkenv(self):
