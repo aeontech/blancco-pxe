@@ -25,15 +25,15 @@ def get_strapper():
         platform.linux_distribution()[0])
 
 def _get_win_strapper():
-    from Win.WinStrapper import WinStrapper
+    from Linux.Strapper.WinStrapper import WinStrapper
     return WinStrapper()
 
 def _get_rh_strapper():
-    from Linux.RhStrapper import RhStrapper
+    from Linux.Strapper.RhStrapper import RhStrapper
     return RhStrapper()
 
 def _get_deb_strapper():
-    from Linux.DebStrapper import DebStrapper
+    from Linux.Strapper.DebStrapper import DebStrapper
     return DebStrapper()
 
 def _get_firewall_daemon():
