@@ -21,6 +21,11 @@ install() {
     yum install -y git python dbus-python
   elif [[ ! -z $APTGET_CMD ]]; then
     apt-get install -y git python python-apt python-dbus
+
+    # Test for UFW
+    if [[ $(dpkg -l ufw 2> /dev/null) ]]; then
+      apt-get install python-ufw
+    fi
   else
     _err "Install could not determine package manager"
     exit 0
