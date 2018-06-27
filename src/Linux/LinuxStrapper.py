@@ -56,12 +56,14 @@ class LinuxStrapper:
         pass
 
     def _configure_tftpd(self):
-        copy(os.getcwd() + '/assets/Linux/tftpd.conf', '/etc/xinetd.d/tftp')
+        path = os.path.realpath(os.path.dirname(__file__) + "../../")
+        copy(path + '/assets/Linux/tftpd.conf', '/etc/xinetd.d/tftp')
         # chmod?
         # selinux? restorecon?
 
     def _configure_nginx(self):
-        copy(os.getcwd() + '/assets/Linux/nginx.conf', '/etc/nginx/nginx.conf')
+        path = os.path.realpath(os.path.dirname(__file__) + "../../")
+        copy(path + '/assets/Linux/nginx.conf', '/etc/nginx/nginx.conf')
         # chmod?
         # selinux? restorecon?
 
@@ -69,8 +71,9 @@ class LinuxStrapper:
         # This directory will store the bulk of the DHCP configuration
         os.path.isdir("/etc/dhcp/pxe/") or os.mkdir("/etc/dhcp/pxe/")
 
-        copy(os.getcwd() + '/assets/Linux/dhcpd/dhcpd.conf',  '/etc/dhcp/dhcpd.conf')
-        copy(os.getcwd() + '/assets/Linux/dhcpd/legacy.conf', '/etc/dhcp/pxe/legacy.conf')
-        copy(os.getcwd() + '/assets/Linux/dhcpd/ipxe.conf',   '/etc/dhcp/pxe/ipxe.conf')
-        copy(os.getcwd() + '/assets/Linux/dhcpd/efi.conf',    '/etc/dhcp/pxe/efi.conf')
-        copy(os.getcwd() + '/assets/Linux/dhcpd/bsdp.conf',   '/etc/dhcp/pxe/bsdp.conf')
+        path = os.path.realpath(os.path.dirname(__file__) + "../../")
+        copy(path + '/assets/Linux/dhcpd/dhcpd.conf',  '/etc/dhcp/dhcpd.conf')
+        copy(path + '/assets/Linux/dhcpd/legacy.conf', '/etc/dhcp/pxe/legacy.conf')
+        copy(path + '/assets/Linux/dhcpd/ipxe.conf',   '/etc/dhcp/pxe/ipxe.conf')
+        copy(path + '/assets/Linux/dhcpd/efi.conf',    '/etc/dhcp/pxe/efi.conf')
+        copy(path + '/assets/Linux/dhcpd/bsdp.conf',   '/etc/dhcp/pxe/bsdp.conf')
