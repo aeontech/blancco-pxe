@@ -1,6 +1,6 @@
 import yum
 import rpm
-import log
+from .. import log
 from LinuxStrapper import LinuxStrapper
 
 class RhStrapper(LinuxStrapper):

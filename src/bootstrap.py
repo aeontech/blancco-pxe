@@ -25,13 +25,16 @@ def get_strapper():
         platform.linux_distribution()[0])
 
 def _get_win_strapper():
-    from WinStrapper import WinStrapper
+    from Win.WinStrapper import WinStrapper
     return WinStrapper()
 
 def _get_rh_strapper():
-    from RhStrapper import RhStrapper
+    from Linux.RhStrapper import RhStrapper
     return RhStrapper()
 
 def _get_deb_strapper():
-    from DebStrapper import DebStrapper
+    from Linux.DebStrapper import DebStrapper
     return DebStrapper()
+
+def _get_firewall_daemon():
+    raise NotImplementedError('_get_firewall_daemon not yet implemented')

@@ -1,6 +1,6 @@
 import os
 import abc
-import log
+from .. import log
 import sys
 from shutil import copy
 import systemd

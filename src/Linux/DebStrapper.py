@@ -1,6 +1,6 @@
 import apt
 import sys
-import log
+from .. import log
 from LinuxStrapper import LinuxStrapper
 
 class DebStrapper(LinuxStrapper):
