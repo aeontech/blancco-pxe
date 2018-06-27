@@ -24,7 +24,7 @@ install() {
 
     # Test for UFW
     if [[ $(dpkg -l ufw 2> /dev/null) ]]; then
-      apt-get install python-ufw
+      apt-get install -y python-ufw
     fi
   else
     _err "Install could not determine package manager"
