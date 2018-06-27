@@ -18,9 +18,9 @@ _info() { echo -e "${BLUE}${BOLD}Info: ${UNBOLD}${@}${NORMAL}"; }
 
 install() {
   if [[ ! -z $YUM_CMD ]]; then
-    yum install -y git python
+    yum install -y git python dbus-python
   elif [[ ! -z $APTGET_CMD ]]; then
-    apt-get install -y git python python-apt
+    apt-get install -y git python python-apt python-dbus
   else
     _err "Install could not determine package manager"
     exit 0
