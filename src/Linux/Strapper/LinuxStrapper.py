@@ -1,12 +1,17 @@
 import os
 import abc
-from .. import log
 import sys
 from shutil import copy
-import systemd
-import sysctl
+from ... import log
+from .. import systemd
+from .. import sysctl
 
 class LinuxStrapper:
+    firewalld = None
+
+    def __init__(self, firewall_daemon):
+        self.firewalld = firewall_daemon
+
     def checkenv(self):
         # Check for sudo privs
         if os.getuid() != 0:
@@ -23,6 +28,7 @@ class LinuxStrapper:
 
     def configure_packages(self):
         log.info("Configuring System...")
+        return
         self._configure_sysctl()
         self._configure_udev()
         self._configure_interfaces()

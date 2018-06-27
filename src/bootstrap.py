@@ -30,11 +30,14 @@ def _get_win_strapper():
 
 def _get_rh_strapper():
     from Linux.Strapper.RhStrapper import RhStrapper
-    return RhStrapper()
+    return RhStrapper(_get_firewall_daemon())
 
 def _get_deb_strapper():
     from Linux.Strapper.DebStrapper import DebStrapper
-    return DebStrapper()
+    return DebStrapper(_get_firewall_daemon())
 
 def _get_firewall_daemon():
-    raise NotImplementedError('_get_firewall_daemon not yet implemented')
+    # ufw
+    # firewalld
+    # iptables
+    pass
