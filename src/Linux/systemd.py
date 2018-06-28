@@ -1,4 +1,3 @@
-# See https://wiki.freedesktop.org/www/Software/systemd/dbus/#methods
 import dbus
 
 def stop(unit):

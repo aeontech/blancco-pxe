@@ -10,9 +10,10 @@ class RhStrapper(LinuxStrapper):
     cb = yum.rpmtrans.NoOutputCallBack()
 
 
-    def __init__(self):
+    def __init__(self, firewall_daemon):
         self.yb = yum.YumBase()
         self.yb.conf.cache = False
+        super().__init__(firewall_daemon)
 
     def install_packages(self):
         try:
