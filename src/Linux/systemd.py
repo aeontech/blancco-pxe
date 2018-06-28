@@ -1,5 +1,4 @@
 # See https://wiki.freedesktop.org/www/Software/systemd/dbus/#methods
-
 import dbus
 
 def stop(unit):
@@ -20,12 +19,25 @@ def enable(unit):
 def disable(unit):
     return _getManager().DisableUnitFiles(unit, True)
 
+def exists(unit):
+    try:
+        unit  = _getUnit(unit)
+        props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
+        load  = props.Get('org.freedesktop.systemd1.Unit', 'LoadError')[0]
+
+        if 'org.freedesktop.DBus.Error.FileNotFound' == load:
+            return False
+    except dbus.exceptions.DBusException:
+        return False
+
+    return True
+
 def isEnabled(unit):
     unit  = _getUnit(unit)
-    state = unit.Get('org.freedesktop.systemd1.Unit', 'isEnabled',
-                     'org.freedektop.DBus.Properties')
+    props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
+    state = props.Get('org.freedesktop.systemd1.Unit', 'UnitFileState')
 
-    if state in ['loaded', 'static']:
+    if state in ['enabled', 'static']:
         return True
     elif state in ['enabled-runtime', 'linked', 'linked-runtime', 'masked',
                    'masked-runtime', 'disabled', 'invalid']:
@@ -34,9 +46,9 @@ def isEnabled(unit):
     raise RuntimeError("Unknown service enabled state: %r" % state)
 
 def isRunning(unit):
-    unit  = _getUnit(unit)
-    state = unit.Get('org.freedesktop.systemd1.Unit', 'ActiveState',
-                    'org.freedektop.DBus.Properties')
+    unit  = dbus.Interface(_getUnit(unit), 'org.freedesktop.systemd1.Unit')
+    props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
+    state = props.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
 
     if state in ['active', 'reloading', 'activating']:
         return True
@@ -52,8 +64,10 @@ def _getManager():
     return dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
 
 def _getUnit(unit):
-    manager = _getManager()
-    path    = manager.LoadUnit(unit)
-    proxy   = dbus.get_object('org.freedesktop.systemd1', path)
+    sysbus   = dbus.SystemBus()
+    systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+    manager  = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
+    path     = manager.LoadUnit(unit)
+    proxy    = sysbus.get_object('org.freedesktop.systemd1', path)
 
     return dbus.Interface(proxy, 'org.freedesktop.systemd1.Unit')
