@@ -48,7 +48,7 @@ def _get_firewall_daemon():
     elif systemd.exists('iptables.service'):
         log.warn("We won't be inserting firewall rules for iptables.\n" + \
            "      Please handle the firewall rules yourself.")
-    else
+    else:
         log.error("Unknown firewall system in use - Ignorantly ignoring")
 
     # This isn't *really* meant to be used this way, but it works
