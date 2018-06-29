@@ -17,30 +17,30 @@ _good() { echo -e "${GREEN}${BOLD}Success: ${UNBOLD}${@}${NORMAL}"; }
 _info() { echo -e "${BLUE}${BOLD}Info: ${UNBOLD}${@}${NORMAL}"; }
 
 install() {
-  if [[ ! -z $YUM_CMD ]]; then
-    yum install -y git python dbus-python
-  elif [[ ! -z $APTGET_CMD ]]; then
-    apt-get install -y git python python-apt python-dbus
+    if [[ ! -z $YUM_CMD ]]; then
+        yum install -y git python dbus-python
+    elif [[ ! -z $APTGET_CMD ]]; then
+        apt-get install -y git python python-apt python-dbus
 
-    # Test for UFW
-    if [[ $(dpkg -l ufw 2> /dev/null) ]]; then
-      apt-get install -y python-ufw
+        # Test for UFW
+        if [[ $(dpkg -l ufw > /dev/null) ]]; then
+            apt-get install -y python-ufw
+        fi
+    else
+        _err "Install could not determine package manager"
+        exit 0
     fi
-  else
-    _err "Install could not determine package manager"
-    exit 0
-  fi
 }
 
 update () {
-  if [[ ! -z $YUM_CMD ]]; then
-    yum makecache fast && yum upgrade -y
-  elif [[ ! -z $APTGET_CMD ]]; then
-    apt-get update -y && apt-get upgrade -y
-  else
-    _err "Update could not determine package manager"
-    exit 0
-  fi
+    if [[ ! -z $YUM_CMD ]]; then
+        yum makecache fast && yum upgrade -y
+    elif [[ ! -z $APTGET_CMD ]]; then
+        apt-get update -y && apt-get upgrade -y
+    else
+        _err "Update could not determine package manager"
+        exit 0
+    fi
 }
 
 
@@ -51,7 +51,7 @@ pushd . > /dev/null
 cd ~
 git clone https://github.com/aeontechnology/blancco-pxe.git
 cd blancco-pxe
-          git checkout develop
+                    git checkout develop
 python stage.py
 popd > /dev/null
 
