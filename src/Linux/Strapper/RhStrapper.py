@@ -20,7 +20,7 @@ class RhStrapper(LinuxStrapper):
             self.yb.doLock()
 
             # First off, we need epel-release
-            if self._install('epel-release'):
+            if not self._is_installed('epel-release') and self._install('epel-release'):
                 # Read EPEL config + enable the repo
                 self.yb.getReposFromConfigFile('/etc/yum.repos.d/epel.repo')
                 self.yb.repos.enableRepo('epel')
