@@ -7,10 +7,10 @@ from .. import systemd
 from .. import sysctl
 
 class LinuxStrapper(object):
-    firewalld = None
+    firewall = None
 
     def __init__(self, firewall_daemon):
-        self.firewalld = firewall_daemon
+        self.firewall = firewall_daemon
 
     def checkenv(self):
         # Check for sudo privs
@@ -28,11 +28,10 @@ class LinuxStrapper(object):
 
     def configure_packages(self):
         log.info("Configuring System...")
-        return
         self._configure_sysctl()
-        self._configure_udev()
-        self._configure_interfaces()
-        self._configure_firewall()
+        # self._configure_udev()
+        # self._configure_interfaces()
+        # self._configure_firewall()
 
         log.info("Configuring Packages...")
         self._configure_tftpd()
@@ -59,7 +58,20 @@ class LinuxStrapper(object):
         pass
 
     def _configure_firewall(self):
-        pass
+        self.firewall.add_zone('pxe')
+        self.firewall.add_zone('corporate')
+
+        self.firewall.set_zone('pxe')
+        # assign pxe0 to pxe zone
+        self.firewall.add_service('http')
+        self.firewall.add_service('dhcp')
+        self.firewall.add_service('tftp')
+        self.firewall.add_service('dns')
+
+        self.firewall.set_zone('corporate')
+        # assign corp0 to corporate zone
+        self.firewall.add_service('ssh')
+        self.firewall.add_masquerade()
 
     def _configure_tftpd(self):
         path = os.path.realpath(os.path.dirname(__file__) + "../../..")
