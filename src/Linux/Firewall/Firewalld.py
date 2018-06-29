@@ -11,19 +11,19 @@ class Firewalld(Firewall):
         self.firewall = FirewallClient()
         self.set_zone(self.firewall.getDefaultZone())
 
-    def refresh():
+    def refresh(self):
         self.reload()
 
-    def set_zone(name):
+    def set_zone(self, name):
         self.zone = self.firewall.config().getZoneByName(name)
 
-    def supports_zones():
+    def supports_zones(self):
         return True
 
-    def get_zones():
+    def get_zones(self):
         return self.firewall.config().listZones()
 
-    def add_zone(name):
+    def add_zone(self, name):
         if name in self.get_zones():
             return False
 
@@ -35,14 +35,14 @@ class Firewalld(Firewall):
 
         return True
 
-    def remove_zone(name):
+    def remove_zone(self, name):
         if name not in self.get_zones():
             return False
 
         self.firewall.config().remove_zone(name)
         return True
 
-    def is_port_allowed(port=None, protocol=None):
+    def is_port_allowed(self, port=None, protocol=None):
         if port is None and protocol is None:
             raise ValueError('No valid values passed to %s::%s' % (__class__, __func__))
 
@@ -56,13 +56,13 @@ class Firewalld(Firewall):
         else:
             return settings.queryPort(port, protocol)
 
-    def is_service_allowed(service):
+    def is_service_allowed(self, service):
         return self.zone.getSettings().queryService(service)
 
-    def is_masquerade_allowed():
+    def is_masquerade_allowed(self):
         return self.zone.getSettings().queryMasquerade()
 
-    def allow_port(port=None, protocol=None):
+    def allow_port(self, port=None, protocol=None):
         if port is None and protocol is None:
             raise ValueError('No valid values passed to %s::%s' % (__class__, __func__))
 
@@ -83,7 +83,7 @@ class Firewalld(Firewall):
 
         self.zone.update(settings)
 
-    def allow_service(service):
+    def allow_service(self, service):
         settings = self.zone.getSettings()
 
         if (service in settings):
@@ -92,12 +92,12 @@ class Firewalld(Firewall):
         settings.addService(service)
         self.zone.update(settings)
 
-    def allow_masquerade():
+    def allow_masquerade(self):
         settings = self.zone.getSettings()
         settings.setMasquerade(True)
         self.zone.update(settings)
 
-    def remove_port(port=None, protocol=None):
+    def remove_port(self, port=None, protocol=None):
         if port is None and protocol is None:
             raise ValueError('No valid values passed to %s::%s' % (__class__, __func__))
 
@@ -118,7 +118,7 @@ class Firewalld(Firewall):
 
         self.zone.update(settings)
 
-    def remove_service(service):
+    def remove_service(self, service):
         settings = self.zone.getSettings()
 
         if (service not in settings):
@@ -127,7 +127,7 @@ class Firewalld(Firewall):
         settings.removeService(service)
         self.zone.update(settings)
 
-    def remove_masquerade():
+    def remove_masquerade(self):
         settings = self.zone.getSettings()
         settings.setMasquerade(False)
         self.zone.update(settings)
