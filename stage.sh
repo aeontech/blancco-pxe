@@ -23,7 +23,8 @@ install() {
         apt-get install -y git python python-apt python-dbus
 
         # Test for UFW
-        if [[ $(dpkg -l ufw > /dev/null) ]]; then
+        $(dpkg -l ufw > /dev/null)
+        if [[ !$? ]]; then
             apt-get install -y python-ufw
         fi
     else
