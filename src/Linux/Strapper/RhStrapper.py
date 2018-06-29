@@ -13,7 +13,7 @@ class RhStrapper(LinuxStrapper):
     def __init__(self, firewall_daemon):
         self.yb = yum.YumBase()
         self.yb.conf.cache = False
-        super().__init__(firewall_daemon)
+        super(__class__).__init__(firewall_daemon)
 
     def install_packages(self):
         try:
