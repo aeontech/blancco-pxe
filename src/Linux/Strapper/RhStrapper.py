@@ -36,10 +36,14 @@ class RhStrapper(LinuxStrapper):
                 # We just added a repo - clear cache
                 self.yb.cleanHeaders()
                 self.yb.cleanMetadata()
+            elif self._is_installed('epel-release'):
+                log.debug('Package "%s" already installed - skipping' % pkgname)
 
             for package in self.packages:
                 if not self._install(package):
                     raise EnvironmentError('Failed to install package "%s"' % package)
+                elif self._is_installed(package):
+                    log.debug('Package "%s" already installed - skipping' % pkgname)
 
         finally:
             self.yb.doUnlock()
@@ -58,8 +62,7 @@ class RhStrapper(LinuxStrapper):
 
             # If we're already installed, end the loop
             if self._is_installed(pkgname):
-                log.debug('Package "%s" already installed - skipping' % pkgname)
-                return True
+                return False
 
             # We're not installed - so let's do that
             log.warn('Marking package "%s" for installation' % pkgname)
