@@ -9,7 +9,7 @@ class Firewalld(Firewall):
 
     def __init__(self):
         self.firewall = FirewallClient()
-        self.setZone(self.firewall.getDefaultZone())
+        self.set_zone(self.firewall.getDefaultZone())
 
     def refresh():
         self.reload()
