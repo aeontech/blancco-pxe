@@ -40,10 +40,10 @@ class RhStrapper(LinuxStrapper):
                 log.debug('Package "epel-release" already installed - skipping')
 
             for package in self.packages:
-                if not self._install(package):
-                    raise EnvironmentError('Failed to install package "%s"' % package)
-                elif self._is_installed(package):
+                if self._is_installed(package):
                     log.debug('Package "%s" already installed - skipping' % package)
+                elif not self._install(package):
+                    raise EnvironmentError('Failed to install package "%s"' % package)
 
         finally:
             self.yb.doUnlock()
