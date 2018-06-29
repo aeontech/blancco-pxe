@@ -6,7 +6,7 @@ from ... import log
 from .. import systemd
 from .. import sysctl
 
-class LinuxStrapper:
+class LinuxStrapper(object):
     firewalld = None
 
     def __init__(self, firewall_daemon):
