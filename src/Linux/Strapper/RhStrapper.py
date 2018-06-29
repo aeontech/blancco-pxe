@@ -25,6 +25,8 @@ class RhStrapper(LinuxStrapper):
                 self.yb.getReposFromConfigFile('/etc/yum.repos.d/epel.repo')
                 self.yb.repos.enableRepo('epel')
 
+                log.debug("Live loading in epel repository")
+
                 # Add repo to the package sack
                 self.yb.repos.populateSack('epel')
 
