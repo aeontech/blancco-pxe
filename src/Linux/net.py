@@ -2,6 +2,7 @@ import fcntl
 import ctypes
 import socket
 import struct
+
 from os import path
 from glob import glob
 from binascii import hexlify
@@ -161,19 +162,31 @@ class Interface:
         ifr = self._ifreq()
         ifr.data.ifr_addr = _sockAddrFromTuple(ip)
 
-        return self._ioctl(SOIC.SIFADDR, ifr)
+        return self._ioctl(SIOC.SIFADDR, ifr)
+
+    def setUp(self):
+        ifr = self._ifreq()
+        ifr.data.ifr_flags = self.getFlags() | 0x1
+
+        return self._ioctl(SIOC.SIFFLAGS, ifr)
+
+    def setDown(self):
+        ifr = self._ifreq()
+        ifr.data.ifr_flags = self.getFlags() & ~0x1
+
+        return self._ioctl(SIOC.SIFFLAGS, ifr)
 
     # And some helper functions
-    def _ifreq():
+    def _ifreq(self):
         ifr  = ifreq()
         ifr.ifr_name = (ctypes.c_ubyte * IFNAMSIZ).from_buffer_copy(self.ifname.ljust(IFNAMSIZ, '\0'))
 
         return ifr
 
-    def _cbytes(val, size):
+    def _cbytes(self, val, size):
         return (ctypes.c_ubyte * size).from_buffer_copy(val.ljust(size, '\0'))
 
-    def _sockToStr(self.s_addr):
+    def _sockToStr(self, s_addr):
         if s_addr.gen.sa_family == 0:
             return 'None'
 
@@ -198,7 +211,7 @@ class Interface:
             addr.in6.sa_family = AF_INET6
             addr.in6.sin6_addr.in6_u = \
                 hexlify(socket.inet_pton(ip[0], ip[1]))
-        else
+        else:
             raise ValueError("Input must be tuple like (net.IPv4, '127.0.0.1')")
 
         return addr
@@ -223,25 +236,25 @@ class InterfaceFlags:
     def __init__(self, flags):
         self.flags = flags
 
-    def up():          return (1<<0)  & self.flags  # sysfs
-    def broadcast():   return (1<<1)  & self.flags  # volatile
-    def debug():       return (1<<2)  & self.flags  # sysfs
-    def loopback():    return (1<<3)  & self.flags  # volatile
-    def pointopoint(): return (1<<4)  & self.flags  # volatile
-    def notrailers():  return (1<<5)  & self.flags  # sysfs
-    def running():     return (1<<6)  & self.flags  # volatile
-    def noarp():       return (1<<7)  & self.flags  # sysfs
-    def promisc():     return (1<<8)  & self.flags  # sysfs
-    def allmulti():    return (1<<9)  & self.flags  # sysfs
-    def master():      return (1<<10) & self.flags  # volatile
-    def slave():       return (1<<11) & self.flags  # volatile
-    def multicast():   return (1<<12) & self.flags  # sysfs
-    def portsel():     return (1<<13) & self.flags  # sysfs
-    def automedia():   return (1<<14) & self.flags  # sysfs
-    def dynamic():     return (1<<15) & self.flags  # sysfs
-    def lower_up():    return (1<<16) & self.flags  # volatile
-    def dormant():     return (1<<17) & self.flags  # volatile
-    def echo():        return (1<<18) & self.flags  # volatile
+    def up(self):          return (1<<0)  & self.flags  # sysfs
+    def broadcast(self):   return (1<<1)  & self.flags  # volatile
+    def debug(self):       return (1<<2)  & self.flags  # sysfs
+    def loopback(self):    return (1<<3)  & self.flags  # volatile
+    def pointopoint(self): return (1<<4)  & self.flags  # volatile
+    def notrailers(self):  return (1<<5)  & self.flags  # sysfs
+    def running(self):     return (1<<6)  & self.flags  # volatile
+    def noarp(self):       return (1<<7)  & self.flags  # sysfs
+    def promisc(self):     return (1<<8)  & self.flags  # sysfs
+    def allmulti(self):    return (1<<9)  & self.flags  # sysfs
+    def master(self):      return (1<<10) & self.flags  # volatile
+    def slave(self):       return (1<<11) & self.flags  # volatile
+    def multicast(self):   return (1<<12) & self.flags  # sysfs
+    def portsel(self):     return (1<<13) & self.flags  # sysfs
+    def automedia(self):   return (1<<14) & self.flags  # sysfs
+    def dynamic(self):     return (1<<15) & self.flags  # sysfs
+    def lower_up(self):    return (1<<16) & self.flags  # volatile
+    def dormant(self):     return (1<<17) & self.flags  # volatile
+    def echo(self):        return (1<<18) & self.flags  # volatile
 
 class InterfaceType:
     type = None
