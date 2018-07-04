@@ -3,6 +3,9 @@ import textwrap
 from math import ceil
 
 def _display(stdscr, title, desc, options):
+    if not options:
+        raise ValueError('You did not provide any choices to the dialog')
+
     chosen = 0
     choosing = True
 
@@ -10,7 +13,7 @@ def _display(stdscr, title, desc, options):
     curses.curs_set(0)
 
     if not curses.has_colors():
-        exit(1)
+        raise RuntimeError('Color not support by curses!')
 
     curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLUE)        # Backdrop
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_WHITE)     # Popup
@@ -39,7 +42,9 @@ def _display(stdscr, title, desc, options):
     stdscr.bkgd(' ', curses.color_pair(1))
     stdscr.refresh()
 
-    window = curses.newwin(height, width, (t_height/2) - (height/2), (t_width/2) - (width/2))
+    baseH = (t_height/2) + int(ceil(float(height)/2))
+    baseW = (t_width/2) - (width/2)
+    window = curses.newwin(height, width, baseH-height, baseW)
     window.bkgd(' ', curses.color_pair(2))
     window.addstr(title[:50].center(width, ' '), curses.A_REVERSE)
     # Output description, line by line
@@ -47,11 +52,11 @@ def _display(stdscr, title, desc, options):
         window.addstr(i+2, 1, desc[i])
     window.refresh()
 
-    baseline = (t_height/2) + int(ceil(float(height)/2))
-    choices = curses.newwin(len(options)+2, width - 4, baseline - len(options) - 5, (t_width / 2) - ((width - 4)/2))
+    opL = len(options)
+    choices = curses.newwin(opL + 2, width - 4, baseH - opL - 5, baseW + 2)
     choices.bkgd(' ', curses.color_pair(3))
 
-    submit = curses.newwin(1, 8, baseline - 2, (t_width / 2) + (width/2) - 10)
+    submit = curses.newwin(1, 8, baseH - 2, baseW + width - 10)
     submit.bkgd(' ', curses.color_pair(4))
     submit.addstr("   OK ")
 
