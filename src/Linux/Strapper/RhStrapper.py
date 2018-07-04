@@ -6,14 +6,14 @@ from LinuxStrapper import LinuxStrapper
 class RhStrapper(LinuxStrapper):
     packages = "tftp tftp-server xinetd nginx dhcp".split(" ")
     yb = None
-    # No output callback - let's make things clean
-    cb = yum.rpmtrans.NoOutputCallBack()
+    cb = None
 
-
-    def __init__(self, firewall_daemon):
+    def __init__(self, systemd, firewall_daemon):
         self.yb = yum.YumBase()
         self.yb.conf.cache = False
-        super(self.__class__, self).__init__(firewall_daemon)
+        self.cb = yum.rpmtrans.NoOutputCallBack()
+
+        super(self.__class__, self).__init__(systemd, firewall_daemon)
 
     def install_packages(self):
         try:

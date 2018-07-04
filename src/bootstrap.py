@@ -12,9 +12,6 @@ deb_dists = [
     "Ubuntu"
 ]
 
-# ugh... globals
-sysbus = None
-
 def get_strapper():
     if os.name == "nt":
         return _get_win_strapper()
@@ -33,21 +30,22 @@ def _get_win_strapper():
     return WinStrapper()
 
 def _get_rh_strapper():
+    from Linux.systemd import systemd
+    sysbus = _get_system_bus
+    sysd   = systemd(sysbus)
+
     from Linux.Strapper.RhStrapper import RhStrapper
-    return RhStrapper(_get_firewall_daemon())
+    return RhStrapper(sysbus, _get_firewall_daemon(sysbsus, systemd))
 
 def _get_deb_strapper():
+    from Linux.systemd import systemd
+    sysbus = _get_system_bus
+    sysd   = systemd(sysbus)
+
     from Linux.Strapper.DebStrapper import DebStrapper
-    return DebStrapper(_get_firewall_daemon())
+    return DebStrapper(sysbus, _get_firewall_daemon(sysbus, systemd))
 
-def _get_firewall_daemon():
-    import dbus
-    import dbus.mainloop.glib
-
-    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-    sysbus = dbus.SystemBus()
-    import Linux.systemd as systemd
-
+def _get_firewall_daemon(sysbus, systemd):
     if systemd.exists('ufw.service'):
         from Linux.Firewall.Ufw import Ufw
         return Ufw()
@@ -64,3 +62,10 @@ def _get_firewall_daemon():
     # as a stub object!
     from Linux.Firewall.Firewall import Firewall
     return Firewall()
+
+def _get_system_bus():
+    import dbus
+    import dbus.mainloop.glib
+
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    return dbus.SystemBus()

@@ -11,7 +11,8 @@ from ..dialog import dialog
 class LinuxStrapper(object):
     firewall = None
 
-    def __init__(self, firewall_daemon):
+    def __init__(self, systemd, firewall_daemon):
+        self.systemd  = systemd
         self.firewall = firewall_daemon
 
     def checkenv(self):
@@ -42,8 +43,8 @@ class LinuxStrapper(object):
 
     def configure_startup(self):
         for service in ['nginx', 'xinetd', 'dhcpd']:
-            systemd.enable("%s.service" % service)
-            systemd.start ("%s.service" % service)
+            self.systemd.enable("%s.service" % service)
+            self.systemd.start ("%s.service" % service)
 
     def _elevate(self):
         os.execvp("sudo", ["sudo"] + sys.argv)
