@@ -1,6 +1,5 @@
 import os
 import log
-import dbus
 import platform
 
 rh_dists = [
@@ -42,6 +41,9 @@ def _get_deb_strapper():
     return DebStrapper(_get_firewall_daemon())
 
 def _get_firewall_daemon():
+    import dbus
+    import dbus.mainloop.glib
+
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     sysbus = dbus.SystemBus()
     import Linux.systemd as systemd
