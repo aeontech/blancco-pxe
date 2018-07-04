@@ -35,7 +35,7 @@ def _get_rh_strapper():
     sysd   = systemd(sysbus)
 
     from Linux.Strapper.RhStrapper import RhStrapper
-    return RhStrapper(sysbus, _get_firewall_daemon(sysbsus, systemd))
+    return RhStrapper(sysbus, _get_firewall_daemon(sysbus, systemd))
 
 def _get_deb_strapper():
     from Linux.systemd import systemd
