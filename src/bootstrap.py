@@ -1,5 +1,6 @@
 import os
 import log
+import dbus
 import platform
 
 rh_dists = [
@@ -11,6 +12,9 @@ deb_dists = [
     "debian",
     "Ubuntu"
 ]
+
+# ugh... globals
+sysbus = None
 
 def get_strapper():
     if os.name == "nt":
@@ -38,6 +42,8 @@ def _get_deb_strapper():
     return DebStrapper(_get_firewall_daemon())
 
 def _get_firewall_daemon():
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    sysbus = dbus.SystemBus()
     import Linux.systemd as systemd
 
     if systemd.exists('ufw.service'):
@@ -45,7 +51,7 @@ def _get_firewall_daemon():
         return Ufw()
     elif systemd.exists('firewalld.service'):
         from Linux.Firewall.Firewalld import Firewalld
-        return Firewalld()
+        return Firewalld(sysbus)
     elif systemd.exists('iptables.service'):
         log.warn("We won't be inserting firewall rules for iptables.\n" + \
            "      Please handle the firewall rules yourself.")

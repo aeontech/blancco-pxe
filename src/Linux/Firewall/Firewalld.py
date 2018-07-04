@@ -7,8 +7,8 @@ class Firewalld(Firewall):
     firewall = None
     zone = None
 
-    def __init__(self):
-        self.firewall = FirewallClient()
+    def __init__(self, sysbus):
+        self.firewall = FirewallClient(sysbus)
         self.set_zone(self.firewall.getDefaultZone())
 
     def refresh(self):

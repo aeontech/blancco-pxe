@@ -57,13 +57,11 @@ def isRunning(unit):
     raise RuntimeError("Unknown service state: %r" % state)
 
 def _getManager():
-    sysbus   = dbus.SystemBus()
     systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
 
     return dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
 
 def _getUnit(unit):
-    sysbus   = dbus.SystemBus()
     systemd1 = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
     manager  = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
     path     = manager.LoadUnit(unit)
