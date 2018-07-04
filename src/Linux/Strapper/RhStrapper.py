@@ -50,9 +50,6 @@ class RhStrapper(LinuxStrapper):
         finally:
             self.yb.doUnlock()
 
-    def configure_packages(self):
-        pass
-
     def _install(self, pkgname):
         matching = self.yb.searchGenerator(['name'], [pkgname], False, True)
 

@@ -2,9 +2,11 @@ import os
 import abc
 import sys
 from shutil import copy
+from .. import net
 from ... import log
 from .. import systemd
 from .. import sysctl
+from ..dialog import dialog
 
 class LinuxStrapper(object):
     firewall = None
@@ -29,7 +31,7 @@ class LinuxStrapper(object):
     def configure_packages(self):
         log.info("Configuring System...")
         self._configure_sysctl()
-        # self._configure_udev()
+        self._configure_interface_names()
         # self._configure_interfaces()
         # self._configure_firewall()
 
@@ -51,8 +53,11 @@ class LinuxStrapper(object):
         sysctl.write('net.ipv4.all.accept_redirects', 0)
         sysctl.write('net.ipv4.all.send_redirects', 0)
 
-    def _configure_udev(self):
-        pass
+    def _configure_interface_names(self):
+        inter   = net.Interfaces.getEthernet()
+        options = ["%s\t%s" % (i.getName(),i.getIpAddress()) for i in inter]
+
+        chosen_ext = dialog("Choose External Interface", extdesc, options)
 
     def _configure_interfaces(self):
         pass

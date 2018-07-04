@@ -7,7 +7,7 @@ class Ufw(Firewall):
     firewall = None
 
     def __init__(self):
-        firewall = ufw.frontend.UFWFrontend(False)
+        self.firewall = ufw.frontend.UFWFrontend(False)
 
     def refresh():
         pass
