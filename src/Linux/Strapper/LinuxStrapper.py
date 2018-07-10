@@ -56,7 +56,12 @@ class LinuxStrapper(object):
 
     def _configure_interface_names(self):
         inter   = net.Interfaces.getEthernet()
-        options = ["%s\t%s" % (i.getName(),i.getIpAddress()) for i in inter]
+        options = ["%s %s" % (i.getName().ljust(8),i.getIpAddress()) for i in inter]
+
+        extdesc = '''
+Blancco PXE server requires connection to your network.
+Please specify through which interface we will connect.
+'''
 
         chosen_ext = dialog("Choose External Interface", extdesc, options)
 
