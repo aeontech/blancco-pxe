@@ -13,11 +13,11 @@ IPv6 = socket.AF_INET6
 class Interfaces:
     @staticmethod
     def getEthernet():
-        return [iface for iface in self.getPhysical() if iface.isEthernet()]
+        return [iface for iface in Interfaces.getPhysical() if iface.isEthernet()]
 
     @staticmethod
     def getPhysical():
-        return [iface for iface in self.getInterfaces() if iface.isPhysical()]
+        return [iface for iface in Interfaces.getInterfaces() if iface.isPhysical()]
 
     @staticmethod
     def getInterfaces():
