@@ -7,26 +7,26 @@ class systemd:
         self.sysbus = sysbus
 
     def stop(self, unit):
-        return _getManager().StopUnit(unit, 'fail')
+        return self._getManager().StopUnit(unit, 'fail')
 
     def start(self, unit):
-        return _getManager().StartUnit(unit, 'fail')
+        return self._getManager().StartUnit(unit, 'fail')
 
     def restart(self, unit):
-        return _getManager().RestartUnit(unit, 'fail')
+        return self._getManager().RestartUnit(unit, 'fail')
 
     def reload(self, unit):
-        return _getManager().ReloadUnit(unit, 'fail')
+        return self._getManager().ReloadUnit(unit, 'fail')
 
     def enable(self, unit):
-        return _getManager().EnableUnitFiles(unit, True)
+        return self._getManager().EnableUnitFiles(unit, True)
 
     def disable(self, unit):
-        return _getManager().DisableUnitFiles(unit, True)
+        return self._getManager().DisableUnitFiles(unit, True)
 
     def exists(self, unit):
         try:
-            unit  = _getUnit(unit)
+            unit  = self._getUnit(unit)
             props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
             load  = props.Get('org.freedesktop.systemd1.Unit', 'LoadError')[0]
 
@@ -38,7 +38,7 @@ class systemd:
         return True
 
     def isEnabled(self, unit):
-        unit  = _getUnit(unit)
+        unit  = self._getUnit(unit)
         props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
         state = props.Get('org.freedesktop.systemd1.Unit', 'UnitFileState')
 
@@ -51,7 +51,7 @@ class systemd:
         raise RuntimeError("Unknown service enabled state: %r" % state)
 
     def isRunning(self, unit):
-        unit  = dbus.Interface(_getUnit(unit), 'org.freedesktop.systemd1.Unit')
+        unit  = dbus.Interface(self._getUnit(unit), 'org.freedesktop.systemd1.Unit')
         props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
         state = props.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
 
