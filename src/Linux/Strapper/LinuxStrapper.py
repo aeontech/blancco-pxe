@@ -85,13 +85,13 @@ Please specify through which interface we will connect.
         self.firewall.add_masquerade()
 
     def _configure_tftpd(self):
-        path = os.path.realpath(os.path.dirname(__file__) + "../../..")
+        path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/tftpd.conf', '/etc/xinetd.d/tftp')
         # chmod?
         # selinux? restorecon?
 
     def _configure_nginx(self):
-        path = os.path.realpath(os.path.dirname(__file__) + "../../..")
+        path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/nginx.conf', '/etc/nginx/nginx.conf')
         # chmod?
         # selinux? restorecon?
@@ -100,7 +100,7 @@ Please specify through which interface we will connect.
         # This directory will store the bulk of the DHCP configuration
         os.path.isdir("/etc/dhcp/pxe/") or os.mkdir("/etc/dhcp/pxe/")
 
-        path = os.path.realpath(os.path.dirname(__file__) + "../../..")
+        path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/dhcpd/dhcpd.conf',  '/etc/dhcp/dhcpd.conf')
         copy(path + '/assets/Linux/dhcpd/legacy.conf', '/etc/dhcp/pxe/legacy.conf')
         copy(path + '/assets/Linux/dhcpd/ipxe.conf',   '/etc/dhcp/pxe/ipxe.conf')
