@@ -6,25 +6,25 @@ class systemd:
     def __init__(self, sysbus):
         self.sysbus = sysbus
 
-    def stop(unit):
+    def stop(self, unit):
         return _getManager().StopUnit(unit, 'fail')
 
-    def start(unit):
+    def start(self, unit):
         return _getManager().StartUnit(unit, 'fail')
 
-    def restart(unit):
+    def restart(self, unit):
         return _getManager().RestartUnit(unit, 'fail')
 
-    def reload(unit):
+    def reload(self, unit):
         return _getManager().ReloadUnit(unit, 'fail')
 
-    def enable(unit):
+    def enable(self, unit):
         return _getManager().EnableUnitFiles(unit, True)
 
-    def disable(unit):
+    def disable(self, unit):
         return _getManager().DisableUnitFiles(unit, True)
 
-    def exists(unit):
+    def exists(self, unit):
         try:
             unit  = _getUnit(unit)
             props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
@@ -37,7 +37,7 @@ class systemd:
 
         return True
 
-    def isEnabled(unit):
+    def isEnabled(self, unit):
         unit  = _getUnit(unit)
         props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
         state = props.Get('org.freedesktop.systemd1.Unit', 'UnitFileState')
@@ -50,7 +50,7 @@ class systemd:
 
         raise RuntimeError("Unknown service enabled state: %r" % state)
 
-    def isRunning(unit):
+    def isRunning(self, unit):
         unit  = dbus.Interface(_getUnit(unit), 'org.freedesktop.systemd1.Unit')
         props = dbus.Interface(unit, 'org.freedesktop.DBus.Properties')
         state = props.Get('org.freedesktop.systemd1.Unit', 'ActiveState')
@@ -62,12 +62,12 @@ class systemd:
 
         raise RuntimeError("Unknown service state: %r" % state)
 
-    def _getManager():
+    def _getManager(self):
         systemd1 = self.sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
 
         return dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
 
-    def _getUnit(unit):
+    def _getUnit(self, unit):
         systemd1 = self.sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
         manager  = dbus.Interface(systemd1, 'org.freedesktop.systemd1.Manager')
         path     = manager.LoadUnit(unit)
