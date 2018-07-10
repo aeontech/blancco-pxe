@@ -64,6 +64,23 @@ Please specify through which interface we will connect.
 '''
 
         chosen_ext = dialog("Choose External Interface", extdesc, options)
+        corp = [i for i in options if i.getName() is chosen_ext][0]
+        options.remove(corp)
+
+        extdesc = 'Please specify through which interface we will connect to '\
+                  ' your PXE network.'
+
+        chosen_ext = dialog("Choose PXE Interface", extdesc, options)
+        pxe_ext    = chosen_ext.split(' ')[0]
+
+        corp = net.Interface(corp_ext)
+        pxe = net.Interface(pxe_ext)
+
+        corp.setName('corp0')
+        pxe.setName('pxe0')
+
+        # Move network files
+        # Modify network files
 
     def _configure_interfaces(self):
         pass
