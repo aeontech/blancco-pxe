@@ -7,6 +7,8 @@ class Ufw(Firewall):
     firewall = None
 
     def __init__(self):
+        raise NotImplementedError()
+        gettext.install(ufw.common.programName)  # fixes '_' not defined
         self.firewall = ufw.frontend.UFWFrontend(False)
 
     def refresh():
