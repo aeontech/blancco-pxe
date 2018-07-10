@@ -39,68 +39,128 @@ class Interface:
         self.sock   = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     def getName(self):
+        """
+        Returns the name of the interface
+        """
         return self.ifname
 
     # Retrieves the MAC address
     def getAddress(self):
+        """
+        Returns the L2/MAC address of the interface
+        """
         return self._read('address')
 
     def getBroadcast(self):
+        """
+        Returns the L2 broadcast address of the interface
+        """
         return self._read('broadcast')
 
     def getDevId(self):
+        """
+        Returns the Linux Device ID associated with this interface
+        """
         return self._read('dev_id')
 
     def getDuplex(self):
+        """
+        Returns 'half' or 'full' depending upon the specified duplex
+        of the interface
+        """
         return self._read('duplex')
 
     def getFlags(self):
+        """
+        Returns an integer representing the flags set on this interface
+        """
         flags = self._read('flags')
         return int(flags, 16)
 
     def getAlias(self):
+        """
+        Returns the alias associated to the interface
+        """
         return self._read('ifalias')
 
     def getIndex(self):
+        """
+        Returns the system-wide index associated with this interface
+        """
         return int(self._read('ifindex'))
 
-    def getLink(self):
-        return int(self._read('iflink'))
-
     def getLinkMode(self):
+        """
+        Returns the link mode associated with this interface
+
+        0: Default link mode
+        1: Dormant link mode
+        """
         return int(self._read('link_mode'))
 
     def getMTU(self):
+        """
+        Returns the integer MTU value configured for this interface
+        """
         return int(self._read('mtu'))
 
     def getDeviceGroup(self):
+        """
+        Returns the network device group associated with this interface
+        """
         return int(self._read('netdev_group'))
 
     def getState(self):
+        """
+        Returns the RFC 2863 operational state of this interface
+        """
         return self._read('operstate')
 
     def getPortID(self):
+        """
+        Returns the interface physical port identifier within the NIC
+        """
         try:
             return self._read('phys_port_id')
         except:
             raise InvalidOperation('%s::phys_port_id not working!' % self.ifname)
 
     def getPortName(self):
+        """
+        Returns the interface physical port name within the NIC
+        """
         try:
             return self._read('phys_port_name')
         except:
             raise InvalidOperation('%s::phys_port_name not working!' % self.ifname)
 
     def getSpeed(self):
+        """
+        Returns the current speed associated with this interface
+        """
         return self._read('speed')
 
     def getTxQueueLen(self):
+        """
+        Returns the overall length of the TX queue associated with
+        this interface
+        """
         return int(self._read('tx_queue_len'))
 
     def getType(self):
+        """
+        Returns the interface protocol associated with this interface
+
+        This protocol can be compared against net.InterfaceType to
+        determine the L2 protocol this interface supports
+        """
         return int(self._read('type'))
 
     def getSwitchID(self):
+        """
+        Returns the physical switch identifier of a switch this port
+        belongs to, as a string
+        """
         try:
             return self._read('phys_switch_id')
         except:
@@ -108,18 +168,27 @@ class Interface:
 
     # And now our ioctl functions
     def getIpAddress(self):
+        """
+        Returns the L3/IP address associated with this interface
+        """
         buff = self._ioctl(SIOC.GIFADDR)
         ifr  = ifreq.unpack(buff)
 
         return self._sockToStr(ifr.data.ifr_addr)
 
     def getNetmask(self):
+        """
+        Returns the L3 network mask associated with this interface
+        """
         buff = self._ioctl(SIOC.GIFNETMASK)
         ifr  = ifreq.unpack(buff)
 
         return self._sockToStr(ifr.data.ifr_addr)
 
     def getMetric(self):
+        """
+        Returns the metric associated with this interface
+        """
         buff = self._ioctl(SIOC.GIFMETRIC)
         ifr  = ifreq.unpack(buff)
 
@@ -127,28 +196,53 @@ class Interface:
 
     # Now for our checking functions
     def isUp(self):
+        """
+        Returns true if the interface is currently in an UP state
+        """
         return InterfaceFlags(self.getFlags()).up()
 
     def isPhysical(self):
+        """
+        Returns true if this interface is associated with a physical
+        interface on this machine
+        """
         return not InterfaceFlags(self.getFlags()).loopback()
 
     def isLoopback(self):
+        """
+        Returns true if the logical interface is a loopback
+        """
         return InterfaceFlags(self.getFlags()).loopback()
 
     def isEthernet(self):
+        """
+        Returns true if the interface implements an Ethernet protocol
+        """
         return InterfaceType(self.getType()).is_ether()
 
     def isHalfDuplex(self):
+        """
+        Returns true if the interface is running half duplex
+        """
         return self.getDuplex() is 'half'
 
     def isFullDuplex(self):
+        """
+        Returns true if the interface is running full duplex
+        """
         return self.getDuplex() is 'full'
 
     def isDormant(self):
+        """
+        Returns true if the interface is dormant
+        """
         return self._read('dormant') is '1'
 
     # Finally, the fun stuff...
     def setName(self, name):
+        """
+        Set the name of the interface while it is DOWN
+        """
         ifr = self._ifreq()
         ifr.data.ifr_newname = _cbytes(name, IFNAMSIZ)
 
@@ -159,18 +253,36 @@ class Interface:
         return False
 
     def setIpAddress(self, ip):
+        """
+        Set the L3/IP address of the interface while it is DOWN
+        """
         ifr = self._ifreq()
         ifr.data.ifr_addr = _sockAddrFromTuple(ip)
 
         return self._ioctl(SIOC.SIFADDR, ifr)
 
+    def setNetmask(self, mask):
+        """
+        Set the L3 network mask of the interface while it is DOWN
+        """
+        ifr = self._ifreq()
+        ifr.data.ifr_addr = _sockAddrFromTuple(mask)
+
+        return self._ioctl(SIOC.SIFNETMASK, ifr)
+
     def setUp(self):
+        """
+        Bring the interface into an UP state
+        """
         ifr = self._ifreq()
         ifr.data.ifr_flags = self.getFlags() | 0x1
 
         return self._ioctl(SIOC.SIFFLAGS, ifr)
 
     def setDown(self):
+        """
+        Bring the interface into a DOWN state
+        """
         ifr = self._ifreq()
         ifr.data.ifr_flags = self.getFlags() & ~0x1
 
