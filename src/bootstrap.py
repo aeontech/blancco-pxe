@@ -31,7 +31,7 @@ def _get_win_strapper():
 
 def _get_rh_strapper():
     from Linux.systemd import systemd
-    sysbus = _get_system_bus
+    sysbus = _get_system_bus()
     sysd   = systemd(sysbus)
 
     from Linux.Strapper.RhStrapper import RhStrapper
@@ -39,7 +39,7 @@ def _get_rh_strapper():
 
 def _get_deb_strapper():
     from Linux.systemd import systemd
-    sysbus = _get_system_bus
+    sysbus = _get_system_bus()
     sysd   = systemd(sysbus)
 
     from Linux.Strapper.DebStrapper import DebStrapper
