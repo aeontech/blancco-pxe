@@ -1,7 +1,5 @@
 #!/bin/bash
 
-exec &>/dev/tty
-
 YUM_CMD=$(which yum 2> /dev/null)
 APTGET_CMD=$(which apt-get 2> /dev/null)
 
@@ -46,6 +44,9 @@ update () {
     fi
 }
 
+# Reset std streams
+exec &>/dev/tty
+exec < /dev/tty
 
 update   # updates system
 install
@@ -55,7 +56,7 @@ cd ~
 git clone https://github.com/aeontechnology/blancco-pxe.git
 cd blancco-pxe
                     git checkout develop
-python stage.py <&0
+python stage.py
 popd > /dev/null
 
 _info "Cleaning up..."
