@@ -1,7 +1,6 @@
 #!/bin/bash
 
-read test
-echo $test
+exec &>/dev/tty
 
 YUM_CMD=$(which yum 2> /dev/null)
 APTGET_CMD=$(which apt-get 2> /dev/null)
