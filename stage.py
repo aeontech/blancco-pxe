@@ -6,7 +6,7 @@ from src.bootstrap import get_strapper
 
 s = raw_input('test')
 print s
-
+exit()
 try:
     strapper = get_strapper()
     strapper.checkenv()
