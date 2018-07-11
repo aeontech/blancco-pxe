@@ -4,6 +4,9 @@ import sys
 from src import log
 from src.bootstrap import get_strapper
 
+s = raw_input('test')
+print s
+
 try:
     strapper = get_strapper()
     strapper.checkenv()
