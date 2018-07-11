@@ -45,7 +45,7 @@ update () {
 }
 
 # Reset std streams
-exec &>/dev/tty
+# exec &>/dev/tty
 exec < /dev/tty
 
 update   # updates system
