@@ -4,8 +4,11 @@ import sys
 from src import log
 from src.bootstrap import get_strapper
 
-s = raw_input('test')
-print s
+if not sys.stdin.istty():
+    print 'Redirected'
+else:
+    print 'Not read from stdin'
+
 exit()
 try:
     strapper = get_strapper()
