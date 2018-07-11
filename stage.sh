@@ -44,10 +44,6 @@ update () {
     fi
 }
 
-# Reset std streams
-# exec &>/dev/tty
-exec < /dev/tty
-
 update   # updates system
 install
 
@@ -56,7 +52,7 @@ cd ~
 git clone https://github.com/aeontechnology/blancco-pxe.git
 cd blancco-pxe
                     git checkout develop
-python stage.py
+python stage.py <&0 /dev/tty
 popd > /dev/null
 
 _info "Cleaning up..."
