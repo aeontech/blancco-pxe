@@ -52,7 +52,7 @@ cd ~
 git clone https://github.com/aeontechnology/blancco-pxe.git
 cd blancco-pxe
                     git checkout develop
-python stage.py <&0 /dev/tty
+cat /dev/tty | python stage.py
 popd > /dev/null
 
 _info "Cleaning up..."
