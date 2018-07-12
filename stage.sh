@@ -52,6 +52,7 @@ cd ~
 git clone https://github.com/aeontechnology/blancco-pxe.git
 cd blancco-pxe
                     git checkout develop
+# Because of how this file is piped into bash, we need to reset our stdin
 cat /dev/tty | python stage.py
 popd > /dev/null
 
