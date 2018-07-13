@@ -81,8 +81,6 @@ def _display(stdscr, title, desc, options):
 
         # Get keypress
         ch = stdscr.getch()
-        stdscr.move(0, 0)
-        print "%d" % ch
 
         if ch == curses.KEY_DOWN and choosing:
             chosen = min(len(options) - 1, chosen + 1)
