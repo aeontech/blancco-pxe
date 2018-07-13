@@ -171,28 +171,37 @@ class Interface:
         """
         Returns the L3/IP address associated with this interface
         """
-        buff = self._ioctl(SIOC.GIFADDR)
-        ifr  = ifreq.unpack(buff)
+        try:
+            buff = self._ioctl(SIOC.GIFADDR)
+            ifr  = ifreq.unpack(buff)
 
-        return self._sockToStr(ifr.data.ifr_addr)
+            return self._sockToStr(ifr.data.ifr_addr)
+        except:
+            return False
 
     def getNetmask(self):
         """
         Returns the L3 network mask associated with this interface
         """
-        buff = self._ioctl(SIOC.GIFNETMASK)
-        ifr  = ifreq.unpack(buff)
+        try:
+            buff = self._ioctl(SIOC.GIFNETMASK)
+            ifr  = ifreq.unpack(buff)
 
-        return self._sockToStr(ifr.data.ifr_addr)
+            return self._sockToStr(ifr.data.ifr_addr)
+        except:
+            return False
 
     def getMetric(self):
         """
         Returns the metric associated with this interface
         """
-        buff = self._ioctl(SIOC.GIFMETRIC)
-        ifr  = ifreq.unpack(buff)
+        try:
+            buff = self._ioctl(SIOC.GIFMETRIC)
+            ifr  = ifreq.unpack(buff)
 
-        return ifr.data.ifr_metric
+            return ifr.data.ifr_metric
+        except:
+            return False
 
     # Now for our checking functions
     def isUp(self):
@@ -243,12 +252,15 @@ class Interface:
         """
         Set the name of the interface while it is DOWN
         """
-        ifr = self._ifreq()
-        ifr.data.ifr_newname = _cbytes(name, IFNAMSIZ)
+        try:
+            ifr = self._ifreq()
+            ifr.data.ifr_newname = _cbytes(name, IFNAMSIZ)
 
-        if self._ioctl(SIOC.SIFNAME, ifr):
-            self.ifname = name
-            return True
+            if self._ioctl(SIOC.SIFNAME, ifr):
+                self.ifname = name
+                return True
+        except:
+            pass
 
         return False
 
@@ -256,37 +268,49 @@ class Interface:
         """
         Set the L3/IP address of the interface while it is DOWN
         """
-        ifr = self._ifreq()
-        ifr.data.ifr_addr = _sockAddrFromTuple(ip)
+        try:
+            ifr = self._ifreq()
+            ifr.data.ifr_addr = _sockAddrFromTuple(ip)
 
-        return self._ioctl(SIOC.SIFADDR, ifr)
+            return self._ioctl(SIOC.SIFADDR, ifr)
+        except:
+            return False
 
     def setNetmask(self, mask):
         """
         Set the L3 network mask of the interface while it is DOWN
         """
-        ifr = self._ifreq()
-        ifr.data.ifr_addr = _sockAddrFromTuple(mask)
+        try:
+            ifr = self._ifreq()
+            ifr.data.ifr_addr = _sockAddrFromTuple(mask)
 
-        return self._ioctl(SIOC.SIFNETMASK, ifr)
+            return self._ioctl(SIOC.SIFNETMASK, ifr)
+        except:
+            return False
 
     def setUp(self):
         """
         Bring the interface into an UP state
         """
-        ifr = self._ifreq()
-        ifr.data.ifr_flags = self.getFlags() | 0x1
+        try:
+            ifr = self._ifreq()
+            ifr.data.ifr_flags = self.getFlags() | 0x1
 
-        return self._ioctl(SIOC.SIFFLAGS, ifr)
+            return self._ioctl(SIOC.SIFFLAGS, ifr)
+        except:
+            return False
 
     def setDown(self):
         """
         Bring the interface into a DOWN state
         """
-        ifr = self._ifreq()
-        ifr.data.ifr_flags = self.getFlags() & ~0x1
+        try:
+            ifr = self._ifreq()
+            ifr.data.ifr_flags = self.getFlags() & ~0x1
 
-        return self._ioctl(SIOC.SIFFLAGS, ifr)
+            return self._ioctl(SIOC.SIFFLAGS, ifr)
+        except:
+            return False
 
     # And some helper functions
     def _ifreq(self):
