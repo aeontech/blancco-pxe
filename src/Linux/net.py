@@ -253,7 +253,7 @@ class Interface:
         Set the name of the interface while it is DOWN
         """
         ifr = self._ifreq()
-        ifr.data.ifr_newname = _cbytes(name, IFNAMSIZ)
+        ifr.data.ifr_newname = self._cbytes(name, IFNAMSIZ)
 
         if self._ioctl(SIOC.SIFNAME, ifr):
             self.ifname = name
