@@ -63,21 +63,34 @@ Blancco PXE server requires connection to your network.
 Please specify through which interface we will connect.
 '''
 
-        chosen_ext = dialog("Choose External Interface", extdesc, options)
-        corp = [i for i in options if i.getName() is chosen_ext][0]
-        options.remove(corp)
+        chosen_idx = dialog("Choose External Interface", extdesc, options)
+        chosen_ext = options[chosen_idx].split(' ')[0]
+
+        # Find chosen interface
+        for i in inter:
+            if i.getName() == chosen_ext:
+                corp = i
+                break
+
+        # Remove chosen interface from options
+        options.remove(options[chosen_idx])
 
         extdesc = 'Please specify through which interface we will connect to '\
                   ' your PXE network.'
 
-        chosen_ext = dialog("Choose PXE Interface", extdesc, options)
-        pxe_ext    = chosen_ext.split(' ')[0]
+        chosen_idx = dialog("Choose PXE Interface", extdesc, options)
+        chosen_ext = options[chosen_idx].split(' ')[0]
 
-        corp = net.Interface(corp_ext)
-        pxe = net.Interface(pxe_ext)
+        # Find chosen interface
+        for i in inter:
+            if i.getName() == chosen_ext:
+                pxe = i
+                break
 
+        # Start modifying interfaces
         corp.setName('corp0')
         pxe.setName('pxe0')
+        pxe.setIpAddress('192.168.100.1')
 
         # Move network files
         # Modify network files
