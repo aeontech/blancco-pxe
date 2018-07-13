@@ -252,15 +252,12 @@ class Interface:
         """
         Set the name of the interface while it is DOWN
         """
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_newname = _cbytes(name, IFNAMSIZ)
+        ifr = self._ifreq()
+        ifr.data.ifr_newname = _cbytes(name, IFNAMSIZ)
 
-            if self._ioctl(SIOC.SIFNAME, ifr):
-                self.ifname = name
-                return True
-        except:
-            pass
+        if self._ioctl(SIOC.SIFNAME, ifr):
+            self.ifname = name
+            return True
 
         return False
 
@@ -268,49 +265,37 @@ class Interface:
         """
         Set the L3/IP address of the interface while it is DOWN
         """
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_addr = _sockAddrFromTuple(ip)
+        ifr = self._ifreq()
+        ifr.data.ifr_addr = _sockAddrFromTuple(ip)
 
-            return self._ioctl(SIOC.SIFADDR, ifr)
-        except:
-            return False
+        return self._ioctl(SIOC.SIFADDR, ifr)
 
     def setNetmask(self, mask):
         """
         Set the L3 network mask of the interface while it is DOWN
         """
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_addr = _sockAddrFromTuple(mask)
+        ifr = self._ifreq()
+        ifr.data.ifr_addr = _sockAddrFromTuple(mask)
 
-            return self._ioctl(SIOC.SIFNETMASK, ifr)
-        except:
-            return False
+        return self._ioctl(SIOC.SIFNETMASK, ifr)
 
     def setUp(self):
         """
         Bring the interface into an UP state
         """
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_flags = self.getFlags() | 0x1
+        ifr = self._ifreq()
+        ifr.data.ifr_flags = self.getFlags() | 0x1
 
-            return self._ioctl(SIOC.SIFFLAGS, ifr)
-        except:
-            return False
+        return self._ioctl(SIOC.SIFFLAGS, ifr)
 
     def setDown(self):
         """
         Bring the interface into a DOWN state
         """
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_flags = self.getFlags() & ~0x1
+        ifr = self._ifreq()
+        ifr.data.ifr_flags = self.getFlags() & ~0x1
 
-            return self._ioctl(SIOC.SIFFLAGS, ifr)
-        except:
-            return False
+        return self._ioctl(SIOC.SIFFLAGS, ifr)
 
     # And some helper functions
     def _ifreq(self):
