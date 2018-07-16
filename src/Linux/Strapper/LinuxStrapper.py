@@ -56,7 +56,7 @@ class LinuxStrapper(object):
 
     def _configure_interface_names(self):
         inter   = net.Interfaces.getEthernet()
-        options = ["%s %s" % (i.getName().ljust(8),i.getIpAddress()) for i in inter]
+        options = ["%s %s" % (i.getName().ljust(8),i.getIpAddress() or "No IP Address") for i in inter]
 
         extdesc = '''
 Blancco PXE server requires connection to your network.
@@ -88,9 +88,18 @@ Please specify through which interface we will connect.
                 break
 
         # Start modifying interfaces
-        corp.setName('corp0')
-        pxe.setName('pxe0')
-        pxe.setIpAddress('192.168.100.1')
+        if corp.isUp(): corp.setDown()
+        if pxe.isUP():  pxe.setDown()
+
+        if not corp.setName('corp0'):
+            raise EnvironmentError("Couldn't set Corporate interface name")
+        if not pxe.setName('pxe0'):
+            raise EnvironmentError("Couldn't set PXE interface name")
+
+        if not pxe.setIpAddress('192.168.100.1'):
+            raise EnvironmentError("Couldn't set PXE interface IP")
+        if not pxe.setNetmask('255.255.255.0'):
+            raise EnvironmentError("Couldn't set PXE interface Netmask")
 
         # Move network files
         # Modify network files

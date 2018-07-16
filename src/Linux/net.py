@@ -255,11 +255,13 @@ class Interface:
         ifr = self._ifreq()
         ifr.data.ifr_newname = self._cbytes(name, IFNAMSIZ)
 
-        if self._ioctl(SIOC.SIFNAME, ifr):
+        try:
+            self._ioctl(SIOC.SIFNAME, ifr)
             self.ifname = name
-            return True
+        except:
+            return False
 
-        return False
+        return True
 
     def setIpAddress(self, ip):
         """
