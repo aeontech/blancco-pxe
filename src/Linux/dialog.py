@@ -6,14 +6,23 @@ def _display(stdscr, title, desc, options):
     if not options:
         raise ValueError('You did not provide any choices to the dialog')
 
+    if curses.has_colors():
+        func = _tui
+    else:
+        func = _txt
+
+    return func(stdscr, title, desc, options)
+
+def _tui(stdscr, title, desc, options):
     chosen = 0
     choosing = True
 
     curses.start_color()
-    curses.curs_set(0)
-
-    if not curses.has_colors():
-        raise RuntimeError('Color not support by curses!')
+    if hasattr(curses, 'curs_set'):
+        try:
+            curses.curs_set(0)
+        except:
+            pass
 
     curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLUE)        # Backdrop
     curses.init_pair(2, curses.COLOR_BLACK, curses.COLOR_WHITE)     # Popup
@@ -89,6 +98,43 @@ def _display(stdscr, title, desc, options):
         elif ch == ord('\t'):
             choosing = not choosing
         elif ch == ord('\n') and not choosing:
+            break
+
+    return chosen
+
+def _txt(stdscr, title, desc, options):
+    chosen = 0
+    width = 30
+
+    if hasattr(curses, 'curs_set'):
+        try:
+            curses.curs_set(0) # make the cursor invisible
+        except:
+            pass
+
+    stdscr.keypad(1)
+
+    while True:
+        # Write choices strings out
+        for i in range(len(options)):
+            if chosen == i:
+                fmt = "%d: [X] %s"
+            else:
+                fmt = "%d: [ ] %s"
+
+            stdscr.addstr(i+1, 0, (fmt % (i, options[i])).ljust(width))
+
+        # Draw interface changes
+        stdscr.refresh()
+
+        # Get keypress
+        ch = stdscr.getch()
+
+        if ch == curses.KEY_DOWN:
+            chosen = min(len(options) - 1, chosen + 1)
+        elif ch == curses.KEY_UP:
+            chosen = max(0, chosen - 1)
+        elif ch == ord('\n'):
             break
 
     return chosen
