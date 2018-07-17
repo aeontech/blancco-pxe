@@ -268,15 +268,20 @@ class Interface:
         Set the L3/IP address of the interface while it is DOWN
         """
 
-        if type(ip) == str and self._is_ip4(ip):
-            ip = (socket.AF_INET, ip)
-        elif type(ip) == str and self._is_ip6(ip):
-            ip = (socket.AF_INET6, ip)
+        try:
+            if type(ip) == str and self._is_ip4(ip):
+                ip = (socket.AF_INET, ip)
+            elif type(ip) == str and self._is_ip6(ip):
+                ip = (socket.AF_INET6, ip)
+            elif type(ip) == str:
+                raise ValueError('Invalid IP address format')
 
-        ifr = self._ifreq()
-        ifr.data.ifr_addr = self._sockAddrFromTuple(ip)
+            ifr = self._ifreq()
+            ifr.data.ifr_addr = self._sockAddrFromTuple(ip)
 
-        return self._ioctl(SIOC.SIFADDR, ifr)
+            return self._ioctl(SIOC.SIFADDR, ifr)
+        except:
+            return False
 
     def setNetmask(self, mask):
         """
@@ -333,11 +338,11 @@ class Interface:
         addr = sockaddr()
 
         if (ip[0] == socket.AF_INET):
-            addr.in4.sa_family = AF_INET
+            addr.in4.sa_family = socket.AF_INET
             addr.in4.sin_addr.s_addr = \
                 struct.unpack('<L', socket.inet_pton(ip[0], ip[1]))[0]
         elif (ip[0] == socket.AF_INET6):
-            addr.in6.sa_family = AF_INET6
+            addr.in6.sa_family = socket.AF_INET6
             addr.in6.sin6_addr.in6_u = \
                 hexlify(socket.inet_pton(ip[0], ip[1]))
         else:
