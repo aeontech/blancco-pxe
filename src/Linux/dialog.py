@@ -114,6 +114,21 @@ def _txt(stdscr, title, desc, options):
 
     stdscr.keypad(1)
 
+    # Break the description into intended lines
+    desc = desc.split('\n')
+    # Wrap the lines by length
+    desc = [textwrap.wrap(i, width - 2) for i in desc]
+    # And flatten the 2D list into a 1D list
+    desc = [x for y in desc for x in y]
+
+    stdscr.addstr(title[:50].center(width, ' '))
+    stdscr.addstr
+
+    # Output description, line by line
+    for i in range(len(desc)):
+        window.addstr(i+2, 1, desc[i])
+    window.refresh()
+
     while True:
         # Write choices strings out
         for i in range(len(options)):
@@ -122,7 +137,7 @@ def _txt(stdscr, title, desc, options):
             else:
                 fmt = "%d: [ ] %s"
 
-            stdscr.addstr(i+1, 0, (fmt % (i, options[i])).ljust(width))
+            stdscr.addstr(i+len(desc)+4, 0, (fmt % (i, options[i])).ljust(width))
 
         # Draw interface changes
         stdscr.refresh()
