@@ -267,6 +267,12 @@ class Interface:
         """
         Set the L3/IP address of the interface while it is DOWN
         """
+
+        if type(ip) == str && self._is_ip4(ip):
+            ip = (socket.AF_INET, ip)
+        elif type(ip) == str && self._is_ip6(ip):
+            ip = (socket.AF_INET6, ip)
+
         ifr = self._ifreq()
         ifr.data.ifr_addr = self._sockAddrFromTuple(ip)
 
@@ -352,6 +358,70 @@ class Interface:
             ifr = struct.pack('256s', self.ifname[:15])
 
         return fcntl.ioctl(self.sock, SIOC, ifr)
+
+    def _is_ip4(ip):
+        try:
+            parts = ip.split('.')
+
+            # We should have exactly 4 parts
+            if not len(parts) == 4:
+                return False
+
+            # The start or end should not be 0
+            if parts[0] == '0' or parts[3] == '0':
+                return False
+
+            # Test each octet
+            for octet in parts:
+                # Octet can not be empty
+                if octet == '':
+                    return False
+
+                # Octet can not have a leading zero unless it is just zero
+                if octet[:1] == '0' and len(octet) > 1:
+                    return False
+
+                octet = int(octet, 10)
+                # Octet must be between 0 and 255 (inclusively)
+                if octet < 0 or octet > 255:
+                    return False
+
+            # We are good
+            return True
+        except:
+            return False
+
+    def _is_ip6(ip):
+        try:
+            parts = ip.split(':')
+
+            # We must never have more than one substitution
+            if ip.count('::') > 1:
+                return False
+
+            # We must have 8 octets
+            if len(parts) > 8:
+                return False
+
+            if len(parts) < 8 and ip.count('::') == 0:
+                return False
+
+            for octet in parts:
+                if octet == '':
+                    continue
+
+                # Octet can not have a leading zero unless it is just zero
+                if octet[:1] == '0' and len(octet) > 1:
+                    return False
+
+                octet = int(octet, 16)
+                if octet < 0 or octet > 0xffff:
+                    return False
+
+            # We are good
+            return True
+        except:
+            return False
 
 class InterfaceFlags:
     flags = None
