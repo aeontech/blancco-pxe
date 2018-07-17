@@ -268,7 +268,7 @@ class Interface:
         Set the L3/IP address of the interface while it is DOWN
         """
         ifr = self._ifreq()
-        ifr.data.ifr_addr = _sockAddrFromTuple(ip)
+        ifr.data.ifr_addr = self._sockAddrFromTuple(ip)
 
         return self._ioctl(SIOC.SIFADDR, ifr)
 
@@ -277,7 +277,7 @@ class Interface:
         Set the L3 network mask of the interface while it is DOWN
         """
         ifr = self._ifreq()
-        ifr.data.ifr_addr = _sockAddrFromTuple(mask)
+        ifr.data.ifr_addr = self._sockAddrFromTuple(mask)
 
         return self._ioctl(SIOC.SIFNETMASK, ifr)
 
@@ -330,7 +330,7 @@ class Interface:
             addr.in4.sa_family = AF_INET
             addr.in4.sin_addr.s_addr = \
                 struct.unpack('<L', socket.inet_pton(ip[0], ip[1]))[0]
-        elif (ifr.data.ifr_addr.gen.sa_family == socket.AF_INET6):
+        elif (ip[0] == socket.AF_INET6):
             addr.in6.sa_family = AF_INET6
             addr.in6.sin6_addr.in6_u = \
                 hexlify(socket.inet_pton(ip[0], ip[1]))
