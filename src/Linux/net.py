@@ -359,7 +359,7 @@ class Interface:
 
         return fcntl.ioctl(self.sock, SIOC, ifr)
 
-    def _is_ip4(ip):
+    def _is_ip4(self, ip):
         try:
             parts = ip.split('.')
 
@@ -391,7 +391,7 @@ class Interface:
         except:
             return False
 
-    def _is_ip6(ip):
+    def _is_ip6(self, ip):
         try:
             parts = ip.split(':')
 
