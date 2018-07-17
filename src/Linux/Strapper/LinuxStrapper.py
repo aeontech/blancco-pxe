@@ -89,7 +89,7 @@ Please specify through which interface we will connect.
 
         # Start modifying interfaces
         if corp.isUp(): corp.setDown()
-        if pxe.isUP():  pxe.setDown()
+        if pxe.isUp():  pxe.setDown()
 
         if not corp.setName('corp0'):
             raise EnvironmentError("Couldn't set Corporate interface name")

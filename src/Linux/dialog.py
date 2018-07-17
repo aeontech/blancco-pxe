@@ -112,6 +112,7 @@ def _txt(stdscr, title, desc, options):
         except:
             pass
 
+    stdscr.clear()
     stdscr.keypad(1)
 
     # Break the description into intended lines
