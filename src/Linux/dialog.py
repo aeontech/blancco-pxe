@@ -122,12 +122,11 @@ def _txt(stdscr, title, desc, options):
     desc = [x for y in desc for x in y]
 
     stdscr.addstr(title[:50].center(width, ' '))
-    stdscr.addstr
 
     # Output description, line by line
     for i in range(len(desc)):
-        window.addstr(i+2, 1, desc[i])
-    window.refresh()
+        stdscr.addstr(i+2, 1, desc[i])
+    stdscr.refresh()
 
     while True:
         # Write choices strings out
