@@ -354,11 +354,11 @@ class Interface:
         addr = sockaddr()
 
         if (ip[0] == socket.AF_INET):
-            addr.in4.sa_family = socket.AF_INET
+            addr.in4.sin_family = socket.AF_INET
             addr.in4.sin_addr.s_addr = \
                 struct.unpack('<L', socket.inet_pton(ip[0], ip[1]))[0]
         elif (ip[0] == socket.AF_INET6):
-            addr.in6.sa_family = socket.AF_INET6
+            addr.in6.sin6_family = socket.AF_INET6
             addr.in6.sin6_addr.in6_u = \
                 hexlify(socket.inet_pton(ip[0], ip[1]))
         else:
