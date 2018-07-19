@@ -279,36 +279,53 @@ class Interface:
             ifr = self._ifreq()
             ifr.data.ifr_addr = self._sockAddrFromTuple(ip)
 
-            return self._ioctl(SIOC.SIFADDR, ifr)
+            self._ioctl(SIOC.SIFADDR, ifr)
         except:
             return False
+
+        return True
 
     def setNetmask(self, mask):
         """
         Set the L3 network mask of the interface while it is DOWN
         """
-        ifr = self._ifreq()
-        ifr.data.ifr_addr = self._sockAddrFromTuple(mask)
+        try:
+            ifr = self._ifreq()
+            ifr.data.ifr_addr = self._sockAddrFromTuple(mask)
 
-        return self._ioctl(SIOC.SIFNETMASK, ifr)
+            self._ioctl(SIOC.SIFNETMASK, ifr)
+        except:
+            return False
+
+        return True
 
     def setUp(self):
         """
         Bring the interface into an UP state
         """
-        ifr = self._ifreq()
-        ifr.data.ifr_flags = self.getFlags() | 0x1
+        try:
+            ifr = self._ifreq()
+            ifr.data.ifr_flags = self.getFlags() | 0x1
 
-        return self._ioctl(SIOC.SIFFLAGS, ifr)
+            self._ioctl(SIOC.SIFFLAGS, ifr)
+        except:
+            return False
+
+        return True
 
     def setDown(self):
         """
         Bring the interface into a DOWN state
         """
-        ifr = self._ifreq()
-        ifr.data.ifr_flags = self.getFlags() & ~0x1
+        try:
+            ifr = self._ifreq()
+            ifr.data.ifr_flags = self.getFlags() & ~0x1
 
-        return self._ioctl(SIOC.SIFFLAGS, ifr)
+            self._ioctl(SIOC.SIFFLAGS, ifr)
+        except:
+            return False
+
+        return True
 
     # And some helper functions
     def _ifreq(self):
