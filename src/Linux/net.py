@@ -274,10 +274,10 @@ class Interface:
         elif type(ip) == str:
             raise ValueError('Invalid IP address format')
 
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_addr = self._sockAddrFromTuple(ip)
+        ifr = self._ifreq()
+        ifr.data.ifr_addr = self._sockAddrFromTuple(ip)
 
+        try:
             self._ioctl(SIOC.SIFADDR, ifr)
         except:
             return False
