@@ -267,15 +267,14 @@ class Interface:
         """
         Set the L3/IP address of the interface while it is DOWN
         """
+        if type(ip) == str and self._is_ip4(ip):
+            ip = (socket.AF_INET, ip)
+        elif type(ip) == str and self._is_ip6(ip):
+            ip = (socket.AF_INET6, ip)
+        elif type(ip) == str:
+            raise ValueError('Invalid IP address format')
 
         try:
-            if type(ip) == str and self._is_ip4(ip):
-                ip = (socket.AF_INET, ip)
-            elif type(ip) == str and self._is_ip6(ip):
-                ip = (socket.AF_INET6, ip)
-            elif type(ip) == str:
-                raise ValueError('Invalid IP address format')
-
             ifr = self._ifreq()
             ifr.data.ifr_addr = self._sockAddrFromTuple(ip)
 
@@ -289,10 +288,10 @@ class Interface:
         """
         Set the L3 network mask of the interface while it is DOWN
         """
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_addr = self._sockAddrFromTuple(mask)
+        ifr = self._ifreq()
+        ifr.data.ifr_addr = self._sockAddrFromTuple(mask)
 
+        try:
             self._ioctl(SIOC.SIFNETMASK, ifr)
         except:
             return False
@@ -303,10 +302,10 @@ class Interface:
         """
         Bring the interface into an UP state
         """
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_flags = self.getFlags() | 0x1
+        ifr = self._ifreq()
+        ifr.data.ifr_flags = self.getFlags() | 0x1
 
+        try:
             self._ioctl(SIOC.SIFFLAGS, ifr)
         except:
             return False
@@ -317,10 +316,10 @@ class Interface:
         """
         Bring the interface into a DOWN state
         """
-        try:
-            ifr = self._ifreq()
-            ifr.data.ifr_flags = self.getFlags() & ~0x1
+        ifr = self._ifreq()
+        ifr.data.ifr_flags = self.getFlags() & ~0x1
 
+        try:
             self._ioctl(SIOC.SIFFLAGS, ifr)
         except:
             return False
