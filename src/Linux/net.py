@@ -288,6 +288,13 @@ class Interface:
         """
         Set the L3 network mask of the interface while it is DOWN
         """
+        if type(ip) == str and self._is_ip4(ip):
+            ip = (socket.AF_INET, ip)
+        elif type(ip) == str and self._is_ip6(ip):
+            ip = (socket.AF_INET6, ip)
+        elif type(ip) == str:
+            raise ValueError('Invalid netmask format')
+
         ifr = self._ifreq()
         ifr.data.ifr_addr = self._sockAddrFromTuple(mask)
 
