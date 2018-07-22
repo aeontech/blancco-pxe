@@ -98,7 +98,7 @@ Please specify through which interface we will connect.
 
         if not pxe.setIpAddress('192.168.100.1'):
             raise EnvironmentError("Couldn't set PXE interface IP")
-        if not pxe.setNetmask('255.255.255.0'):
+        if not pxe.setNetmask(24):
             raise EnvironmentError("Couldn't set PXE interface Netmask")
 
         # Move network files

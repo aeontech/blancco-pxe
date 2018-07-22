@@ -288,11 +288,19 @@ class Interface:
         """
         Set the L3 network mask of the interface while it is DOWN
         """
-        if type(ip) == str and self._is_ip4(ip):
-            ip = (socket.AF_INET, ip)
-        elif type(ip) == str and self._is_ip6(ip):
-            ip = (socket.AF_INET6, ip)
-        elif type(ip) == str:
+        ip = self.getIpAddress()
+
+        if self._is_ip4(ip) and type(mask) == int and mask > 32:
+            # Calculate IPv4 off CIDR mask
+            mask = (socket.AF_INET,  self._cidr2mask4(mask))
+        elif self._is_ip4(ip) and type(mask) == str and self._is_ip4(mask):
+            # IPv4 Subnet Mask
+            mask = (socket.AF_INET,  mask)
+        elif self._is_ip6(ip) and type(mask) == int and mask > 128:
+            # IPv6 CIDR mask?
+            # mask = (socket.AF_INET6, mask)
+            raise NotImplementedError("Unsure how to do IPv6 masks")
+        elif type(mask) == int:
             raise ValueError('Invalid netmask format')
 
         ifr = self._ifreq()
@@ -372,6 +380,14 @@ class Interface:
             raise ValueError("Input must be tuple like (net.IPv4, '127.0.0.1')")
 
         return addr
+
+    def _cidr2mask4(self, mask):
+        bits = 0xffffffff ^ (1 << 32 - mask) - 1
+        return socket.inet_ntoa(struct.pack('!I', bits))
+
+    def _mask2cidr4(self, mask):
+        bits = struct.unpack('>I', socket.inet_aton(mask))[0]
+        return bin(bits).count("1")
 
     # Used to read data from an interface file
     def _read(self, file):
