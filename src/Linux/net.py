@@ -290,13 +290,13 @@ class Interface:
         """
         ip = self.getIpAddress()
 
-        if self._is_ip4(ip) and type(mask) == int and mask > 32:
+        if self._is_ip4(ip) and type(mask) == int and mask <= 32:
             # Calculate IPv4 off CIDR mask
             mask = (socket.AF_INET,  self._cidr2mask4(mask))
         elif self._is_ip4(ip) and type(mask) == str and self._is_ip4(mask):
             # IPv4 Subnet Mask
             mask = (socket.AF_INET,  mask)
-        elif self._is_ip6(ip) and type(mask) == int and mask > 128:
+        elif self._is_ip6(ip) and type(mask) == int and mask <= 128:
             # IPv6 CIDR mask?
             # mask = (socket.AF_INET6, mask)
             raise NotImplementedError("Unsure how to do IPv6 masks")
