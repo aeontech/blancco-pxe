@@ -14,6 +14,9 @@ class Firewalld(Firewall):
     def refresh(self):
         self.reload()
 
+    def get_zone(self, name):
+        return self.zone.getShort() is name
+
     def set_zone(self, name):
         self.zone = self.firewall.config().getZoneByName(name)
 
@@ -41,6 +44,12 @@ class Firewalld(Firewall):
 
         self.firewall.config().remove_zone(name)
         return True
+
+    def get_ports(self):
+        return self.zone.getPorts()
+
+    def get_services(self):
+        return self.zone.getServices()
 
     def is_port_allowed(self, port=None, protocol=None):
         if port is None and protocol is None:
