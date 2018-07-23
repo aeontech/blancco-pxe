@@ -160,14 +160,14 @@ Please specify through which interface we will connect.
         self.firewall.add_zone('corporate')
 
         self.firewall.set_zone('pxe')
-        # assign pxe0 to pxe zone
+        self.firewall.add_interface('pxe0')
         self.firewall.allow_service('http')
         self.firewall.allow_service('dhcp')
         self.firewall.allow_service('tftp')
         self.firewall.allow_service('dns')
 
         self.firewall.set_zone('corporate')
-        # assign corp0 to corporate zone
+        self.firewall.add_interface('corp0')
         self.firewall.allow_service('ssh')
         self.firewall.allow_masquerade()
 
