@@ -130,6 +130,9 @@ Please specify through which interface we will connect.
         if not _pxe.setNetmask(24):
             raise EnvironmentError("Couldn't set PXE interface Netmask")
 
+        corp.setUp()
+        _pxe.setUp()
+
         basepath = '/etc/sysconfig/network-scripts/ifcfg-%s'
 
         # Modify network files - corp
