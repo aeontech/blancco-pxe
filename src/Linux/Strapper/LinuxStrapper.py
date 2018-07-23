@@ -91,7 +91,7 @@ Please specify through which interface we will connect.
                 break
 
         self.corp_int = corp
-        self._pxe_int = pxe
+        self._pxe_int = _pxe
 
         # Start modifying interfaces
         if corp.isUp(): corp.setDown()
@@ -161,15 +161,15 @@ Please specify through which interface we will connect.
 
         self.firewall.set_zone('pxe')
         # assign pxe0 to pxe zone
-        self.firewall.add_service('http')
-        self.firewall.add_service('dhcp')
-        self.firewall.add_service('tftp')
-        self.firewall.add_service('dns')
+        self.firewall.allow_service('http')
+        self.firewall.allow_service('dhcp')
+        self.firewall.allow_service('tftp')
+        self.firewall.allow_service('dns')
 
         self.firewall.set_zone('corporate')
         # assign corp0 to corporate zone
-        self.firewall.add_service('ssh')
-        self.firewall.add_masquerade()
+        self.firewall.allow_service('ssh')
+        self.firewall.allow_masquerade()
 
     def _configure_tftpd(self):
         path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
