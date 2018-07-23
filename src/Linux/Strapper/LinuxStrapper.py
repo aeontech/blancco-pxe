@@ -1,6 +1,7 @@
 import os
 import abc
 import sys
+import uuid
 from shutil import copy
 from .. import net
 from ... import log
@@ -10,6 +11,8 @@ from ..dialog import dialog
 
 class LinuxStrapper(object):
     firewall = None
+    corp_int = None
+    _pxe_int = None
 
     def __init__(self, systemd, firewall_daemon):
         self.systemd  = systemd
@@ -33,8 +36,8 @@ class LinuxStrapper(object):
         log.info("Configuring System...")
         self._configure_sysctl()
         self._configure_interface_names()
-        # self._configure_interfaces()
-        # self._configure_firewall()
+        self._configure_interfaces()
+        self._configure_firewall()
 
         log.info("Configuring Packages...")
         self._configure_tftpd()
@@ -84,28 +87,73 @@ Please specify through which interface we will connect.
         # Find chosen interface
         for i in inter:
             if i.getName() == chosen_ext:
-                pxe = i
+                _pxe = i
                 break
+
+        self.corp_int = corp
+        self._pxe_int = pxe
 
         # Start modifying interfaces
         if corp.isUp(): corp.setDown()
-        if pxe.isUp():  pxe.setDown()
+        if _pxe.isUp(): _pxe.setDown()
+
+        corp_nm = corp.getName()
+        _pxe_nm = _pxe.getName()
 
         if not corp.setName('corp0'):
             raise EnvironmentError("Couldn't set Corporate interface name")
-        if not pxe.setName('pxe0'):
+        if not _pxe.setName('pxe0'):
             raise EnvironmentError("Couldn't set PXE interface name")
 
-        if not pxe.setIpAddress('192.168.100.1'):
-            raise EnvironmentError("Couldn't set PXE interface IP")
-        if not pxe.setNetmask(24):
-            raise EnvironmentError("Couldn't set PXE interface Netmask")
+        # Delete original interface files
+        basepath = '/etc/sysconfig/network-scripts/ifcfg-%s'
+        if os.path.isfile(basepath % corp_nm): os.remove(basepath % corp_nm)
+        if os.path.isfile(basepath % _pxe_nm): os.remove(basepath % _pxe_nm)
 
-        # Move network files
-        # Modify network files
+        # Setup interface names in udev
+        basepath = '/usr/lib/udev/rules.d/%s.rules'
+        if os.path.isfile(basepath % '60-net'): os.remove(basepath % '60-net')
+
+        line = 'ACTION=="add", SUBSYSTEM=="net", DRIVERS=="?*", ' \
+               'ATTR{address}=="%s", NAME="%s"'
+        f = open(basepath % '70-persistent-net', 'w+')
+        f.write(line % (corp.getAddress(), corp.getName()))
+        f.write(line % (_pxe.getAddress(), _pxe.getName()))
+        f.close()
 
     def _configure_interfaces(self):
-        pass
+        corp = self.corp_int
+        _pxe = self._pxe_int
+
+        if not _pxe.setIpAddress('192.168.100.1'):
+            raise EnvironmentError("Couldn't set PXE interface IP")
+        if not _pxe.setNetmask(24):
+            raise EnvironmentError("Couldn't set PXE interface Netmask")
+
+        basepath = '/etc/sysconfig/network-scripts/ifcfg-%s'
+
+        # Modify network files - corp
+        f = open(basepath % 'corp0', 'w')
+        f.write('DEVICE=corp0\n')
+        f.write('BOOTPROTO=dhcp\n')
+        f.write('DEFROUTE=yes\n')
+        f.write('ONBOOT=yes\n')
+        f.write('ZONE=corporate\n')
+        f.write('UUID=%s\n' % str(uuid.uuid4()))
+        f.close()
+
+        # Modify network files - pxe
+        f = open(basepath % 'pxe0', 'w')
+        f.write('DEVICE=pxe0\n')
+        f.write('BOOTPROTO=none\n')
+        f.write('ONBOOT=yes\n')
+        f.write('IPADDR=192.168.100.1')
+        f.write('DNS1=192.168.100.1')
+        f.write('PREFIX=24')
+        f.write('USERCTL=no')
+        f.write('ZONE=pxe\n')
+        f.write('UUID=%s\n' % str(uuid.uuid4()))
+        f.close()
 
     def _configure_firewall(self):
         self.firewall.add_zone('pxe')
