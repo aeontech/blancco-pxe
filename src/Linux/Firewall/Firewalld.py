@@ -45,6 +45,24 @@ class Firewalld(Firewall):
         self.firewall.config().remove_zone(name)
         return True
 
+    def get_interfaces(self):
+        return self.zone.getInterfaces()
+
+    def interface_in(self, ifname):
+        return self.zone.queryInterface(ifname)
+
+    def add_interface(self, ifname):
+        if self.interface_in(ifname):
+            return False
+
+        return self.zone.addInterface(ifname)
+
+    def remove_interface(self, ifname):
+        if not self.interface_in(ifname):
+            return False
+
+        return self.zone.removeInterface(ifname)
+
     def get_ports(self):
         return self.zone.getPorts()
 

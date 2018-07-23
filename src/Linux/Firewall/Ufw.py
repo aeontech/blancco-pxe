@@ -14,20 +14,23 @@ class Ufw(Firewall):
     def refresh():
         pass
 
+    def get_zone(name):
+        raise RuntimeError("UFW doesn't support zones!")
+
     def set_zone(name):
-        pass
+        raise RuntimeError("UFW doesn't support zones!")
 
     def supports_zones():
         return False
 
     def get_zones():
-        return []
+        raise RuntimeError("UFW doesn't support zones!")
 
     def add_zone(name):
-        return False
+        raise RuntimeError("UFW doesn't support zones!")
 
     def remove_zone(name):
-        return False
+        raise RuntimeError("UFW doesn't support zones!")
 
     def is_port_allowed(port=None, protocol=None):
         return True
