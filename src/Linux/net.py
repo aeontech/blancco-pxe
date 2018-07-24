@@ -191,6 +191,14 @@ class Interface:
         except:
             return False
 
+    def getCidrMask(self):
+        mask = self.getNetmask()
+
+        if mask is not False:
+            mask = self._mask2cidr4(mask)
+
+        return mask
+
     def getMetric(self):
         """
         Returns the metric associated with this interface
