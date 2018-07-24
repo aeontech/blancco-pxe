@@ -113,7 +113,7 @@ class Firewalld(Firewall):
     def allow_service(self, service):
         settings = self.zone.getSettings()
 
-        if (service in settings):
+        if (self.is_service_allowed(service)):
             return
 
         settings.addService(service)
