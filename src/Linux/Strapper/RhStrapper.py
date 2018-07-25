@@ -79,8 +79,9 @@ class RhStrapper(LinuxStrapper):
 
                 # Now we're installed, let's end the loop
                 return True
-            except:
-                pass
+            except Exception, ex:
+                log.error('Package "%s" installation errored: "%s"' % (pkgname, str(ex.message)))
+                return False
         else:
             log.error('Package "%s" has no installation target!' % pkgname)
 
