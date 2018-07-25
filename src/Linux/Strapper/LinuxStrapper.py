@@ -1,7 +1,6 @@
 import os
 import abc
 import sys
-import uuid
 from shutil import copy
 from .. import net
 from ... import log

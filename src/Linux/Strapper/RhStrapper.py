@@ -1,5 +1,6 @@
 import yum
 import rpm
+import uuid
 from ... import log
 from LinuxStrapper import LinuxStrapper
 
