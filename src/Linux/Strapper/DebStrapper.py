@@ -4,7 +4,7 @@ from ... import log
 from LinuxStrapper import LinuxStrapper
 
 class DebStrapper(LinuxStrapper):
-    packages = "tftp tftpd xinetd nginx isc-dhcp-server".split(" ")
+    packages = "tftp tftpd xinetd nginx dnsmasq isc-dhcp-server".split(" ")
 
     def install_packages(self):
         cache = apt.cache.Cache()

@@ -4,7 +4,7 @@ from ... import log
 from LinuxStrapper import LinuxStrapper
 
 class RhStrapper(LinuxStrapper):
-    packages = "tftp tftp-server xinetd nginx dhcp".split(" ")
+    packages = "tftp tftp-server xinetd nginx dnsmasq dhcp".split(" ")
     yb = None
     cb = None
 
