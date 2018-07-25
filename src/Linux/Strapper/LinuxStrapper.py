@@ -62,9 +62,9 @@ class LinuxStrapper(object):
         options = ["%s %s" % (i.getName().ljust(8),i.getIpAddress() or "No IP Address") for i in inter]
 
         extdesc = '''
-Blancco PXE server requires connection to your network.
-Please specify through which interface we will connect.
-'''
+        Blancco PXE server requires connection to your network.
+        Please specify through which interface we will connect.
+        '''
 
         chosen_idx = dialog("Choose External Interface", extdesc, options)
         chosen_ext = options[chosen_idx].split(' ')[0]
