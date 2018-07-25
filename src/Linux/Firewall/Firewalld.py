@@ -1,3 +1,4 @@
+from dbus import DBusException
 from FirewallError import FirewallError
 from firewall.client import FirewallClient
 from firewall.client import FirewallClientZoneSettings
@@ -27,7 +28,7 @@ class Firewalld(Firewall):
 
         try:
             self.firewall.setDefaultZone(zone)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             return FirewallError(ex.message)
 
         return True
@@ -60,7 +61,7 @@ class Firewalld(Firewall):
 
         try:
             self.firewall.config().addZone(name, settings)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -71,7 +72,7 @@ class Firewalld(Firewall):
 
         try:
             self.firewall.config().remove_zone(name)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -88,7 +89,7 @@ class Firewalld(Firewall):
 
         try:
             self.zone.addInterface(ifname)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -99,7 +100,7 @@ class Firewalld(Firewall):
 
         try:
             self.zone.removeInterface(ifname)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -154,7 +155,7 @@ class Firewalld(Firewall):
 
         try:
             self.zone.update(settings)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -168,7 +169,7 @@ class Firewalld(Firewall):
 
         try:
             self.zone.update(settings)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -182,7 +183,7 @@ class Firewalld(Firewall):
 
         try:
             self.zone.update(settings)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -211,7 +212,7 @@ class Firewalld(Firewall):
 
         try:
             self.zone.update(settings)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -225,7 +226,7 @@ class Firewalld(Firewall):
 
         try:
             self.zone.update(settings)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
@@ -239,7 +240,7 @@ class Firewalld(Firewall):
 
         try:
             self.zone.update(settings)
-        except dbus.DBusException, ex:
+        except DBusException, ex:
             raise FirewallError(ex.message)
 
         return True
