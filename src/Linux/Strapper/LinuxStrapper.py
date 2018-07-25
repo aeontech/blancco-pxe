@@ -76,7 +76,7 @@ class LinuxStrapper(object):
         # Remove chosen interface from options
         options.remove(options[chosen_idx])
 
-        extdesc = 'Please specify through which interface we will connect to '
+        extdesc = 'Please specify through which interface we will connect to'
                   ' your PXE network.'
 
         chosen_idx = dialog("Choose PXE Interface", extdesc, options)
