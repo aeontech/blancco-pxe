@@ -113,7 +113,7 @@ class LinuxStrapper(object):
         if os.path.isfile(basepath % '60-net'): os.remove(basepath % '60-net')
 
         line = 'ACTION=="add", SUBSYSTEM=="net", DRIVERS=="?*", ' \
-               'ATTR{address}=="%s", NAME="%s"'
+               'ATTR{address}=="%s", NAME="%s"\n'
         f = open(basepath % '70-persistent-net', 'w+')
         f.write(line % (corp.getAddress(), corp.getName()))
         f.write(line % (_pxe.getAddress(), _pxe.getName()))
