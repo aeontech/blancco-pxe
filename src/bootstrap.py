@@ -58,10 +58,8 @@ def _get_firewall_daemon(sysbus, systemd):
     else:
         log.error("Unknown firewall system in use - Ignorantly ignoring")
 
-    # This isn't *really* meant to be used this way, but it works
-    # as a stub object!
-    from Linux.Firewall.Firewall import Firewall
-    return Firewall()
+    from Linux.Firewall.Firewall import StubFirewall
+    return StubFirewall()
 
 def _get_system_bus():
     import dbus
