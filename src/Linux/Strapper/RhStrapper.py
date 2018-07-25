@@ -11,6 +11,7 @@ class RhStrapper(LinuxStrapper):
     def __init__(self, systemd, firewall_daemon):
         self.yb = yum.YumBase()
         self.yb.conf.cache = False
+        self.yb.conf.assumeyes = True  # Otherwise key installation will fail
         self.cb = yum.rpmtrans.NoOutputCallBack()
 
         super(self.__class__, self).__init__(systemd, firewall_daemon)
