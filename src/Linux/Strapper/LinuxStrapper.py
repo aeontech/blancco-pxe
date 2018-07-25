@@ -163,9 +163,7 @@ Please specify through which interface we will connect.
         self.firewall.add_zone('corporate')
 
         self.firewall.refresh()
-
-        if not self.firewall.set_default_zone('corporate'):
-            raise EnvironmentError('Couldn\'t set default zone')
+        self.firewall.set_default_zone('corporate')
 
         self.firewall.set_zone('pxe')
         self.firewall.add_interface('pxe0')

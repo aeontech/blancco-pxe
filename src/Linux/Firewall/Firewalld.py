@@ -22,7 +22,15 @@ class Firewalld(Firewall):
         if not self.zone_exists(zone):
             raise RuntimeError('Zone "%s" doesn\'t exist.' % zone)
 
-        return self.firewall.setDefaultZone(zone)
+        if self.get_default_zone() is zone:
+            return False
+
+        try:
+            self.firewall.setDefaultZone(zone)
+        except dbus.DBusException, ex:
+            return FirewallError(ex.message)
+
+        return True
 
     def is_zone(self, name):
         return self.zone.getShort() is name
