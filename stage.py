@@ -9,6 +9,7 @@ try:
     strapper.checkenv()
     strapper.install_packages()
     strapper.configure_packages()
+    strapper.configure_startup()
 except EnvironmentError:
     log.error(sys.exc_info()[1])
     exit(1)
