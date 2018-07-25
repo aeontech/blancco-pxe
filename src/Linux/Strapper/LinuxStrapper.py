@@ -1,6 +1,7 @@
 import os
 import abc
 import sys
+import stat
 from shutil import copy
 from .. import net
 from ... import log
@@ -163,15 +164,17 @@ class LinuxStrapper(object):
         path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/tftpd.conf', '/etc/xinetd.d/tftp')
         os.mkdir('/srv/tftproot/')
-        # chmod?
-        # selinux? restorecon?
+        os.chmod('/srv/tftproot/', stat.S_IRWXU |
+                                   stat.S_IRGRP | stat.S_IXGRP |
+                                   stat.S_IROTH | stat.S_IXOTH)
 
     def _configure_nginx(self):
         path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/nginx.conf', '/etc/nginx/nginx.conf')
         os.mkdir('/srv/httproot/')
-        # chmod?
-        # selinux? restorecon?
+        os.chmod('/srv/httproot/', stat.S_IRWXU |
+                                   stat.S_IRGRP | stat.S_IXGRP |
+                                   stat.S_IROTH | stat.S_IXOTH)
 
     def _configure_dhcpd(self):
         # This directory will store the bulk of the DHCP configuration
