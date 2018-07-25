@@ -147,6 +147,7 @@ class LinuxStrapper(object):
         f = open(basepath % 'pxe0', 'w')
         f.write('DEVICE=pxe0\n')
         f.write('BOOTPROTO=none\n')
+        f.write('DEFROUTE=no\n')
         f.write('ONBOOT=yes\n')
         f.write('IPADDR=%s\n' % _pxe.getIpAddress())
         f.write('DNS1=%s\n'   % _pxe.getIpAddress())
