@@ -163,7 +163,7 @@ class LinuxStrapper(object):
     def _configure_tftpd(self):
         path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/tftpd.conf', '/etc/xinetd.d/tftp')
-        os.mkdir('/srv/tftproot/')
+        os.path.isdir('/srv/tftproot') or os.mkdir('/srv/tftproot/')
         os.chmod('/srv/tftproot/', stat.S_IRWXU |
                                    stat.S_IRGRP | stat.S_IXGRP |
                                    stat.S_IROTH | stat.S_IXOTH)
@@ -171,7 +171,7 @@ class LinuxStrapper(object):
     def _configure_nginx(self):
         path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/nginx.conf', '/etc/nginx/nginx.conf')
-        os.mkdir('/srv/httproot/')
+        os.path.isdir('/srv/httproot') or os.mkdir('/srv/httproot/')
         os.chmod('/srv/httproot/', stat.S_IRWXU |
                                    stat.S_IRGRP | stat.S_IXGRP |
                                    stat.S_IROTH | stat.S_IXOTH)
