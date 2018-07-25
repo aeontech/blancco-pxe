@@ -1,5 +1,5 @@
-from dbus import DBusException
 from FirewallError import FirewallError
+from dbus.exceptions import DBusException
 from firewall.client import FirewallClient
 from firewall.client import FirewallClientZoneSettings
 
