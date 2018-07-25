@@ -1,0 +1,2 @@
+class FirewallError(RuntimeError):
+    pass

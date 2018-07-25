@@ -1,3 +1,4 @@
+from FirewallError import FirewallError
 from firewall.client import FirewallClient
 from firewall.client import FirewallClientZoneSettings
 
@@ -14,14 +15,29 @@ class Firewalld(Firewall):
     def refresh(self):
         self.reload()
 
-    def get_zone(self, name):
+    def get_default_zone(self):
+        return self.firewall.getDefaultZone()
+
+    def set_default_zone(self, zone):
+        if not self.zone_exists(zone):
+            raise RuntimeError('Zone "%s" doesn\'t exist.' % zone)
+
+        return self.firewall.setDefaultZone(zone)
+
+    def is_zone(self, name):
         return self.zone.getShort() is name
+
+    def get_zone_name(self):
+        return self.zone.getShort()
 
     def set_zone(self, name):
         self.zone = self.firewall.config().getZoneByName(name)
 
     def supports_zones(self):
         return True
+
+    def zone_exists(self, zone):
+        return zone in self.get_zones()
 
     def get_zones(self):
         return self.firewall.config().listZones()
@@ -34,7 +50,10 @@ class Firewalld(Firewall):
         settings.setShort(name)
         settings.setDescription('"%s" zone - added by Blancco!' % name)
 
-        self.firewall.config().addZone(name, settings)
+        try:
+            self.firewall.config().addZone(name, settings)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
 
         return True
 
@@ -42,7 +61,11 @@ class Firewalld(Firewall):
         if name not in self.get_zones():
             return False
 
-        self.firewall.config().remove_zone(name)
+        try:
+            self.firewall.config().remove_zone(name)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
         return True
 
     def get_interfaces(self):
@@ -55,13 +78,23 @@ class Firewalld(Firewall):
         if self.interface_in(ifname):
             return False
 
-        return self.zone.addInterface(ifname)
+        try:
+            self.zone.addInterface(ifname)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
+        return True
 
     def remove_interface(self, ifname):
         if not self.interface_in(ifname):
             return False
 
-        return self.zone.removeInterface(ifname)
+        try:
+            self.zone.removeInterface(ifname)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
+        return True
 
     def get_ports(self):
         return self.zone.getPorts()
@@ -93,7 +126,7 @@ class Firewalld(Firewall):
         if port is None and protocol is None:
             raise ValueError('No valid values passed to %s::%s' % (__class__, __func__))
 
-        settings = self.zone.getSettings()
+        old = settings = self.zone.getSettings()
 
         if port is not None and protocol is None:
             if not self.is_port_allowed(port, 'tcp'):
@@ -108,27 +141,49 @@ class Firewalld(Firewall):
             if not self.is_port_allowed(port=port):
                 settings.addPort(port, protocol)
 
-        self.zone.update(settings)
+        if old == settings:
+            return False
+
+        try:
+            self.zone.update(settings)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
+        return True
 
     def allow_service(self, service):
-        settings = self.zone.getSettings()
-
         if (self.is_service_allowed(service)):
-            return
+            return False
 
+        settings = self.zone.getSettings()
         settings.addService(service)
-        self.zone.update(settings)
+
+        try:
+            self.zone.update(settings)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
+        return True
 
     def allow_masquerade(self):
+        if self.is_masquerade_allowed():
+            return False
+
         settings = self.zone.getSettings()
         settings.setMasquerade(True)
-        self.zone.update(settings)
+
+        try:
+            self.zone.update(settings)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
+        return True
 
     def remove_port(self, port=None, protocol=None):
         if port is None and protocol is None:
             raise ValueError('No valid values passed to %s::%s' % (__class__, __func__))
 
-        settings = self.zone.getSettings()
+        old = settings = self.zone.getSettings()
 
         if port is not None and protocol is None:
             if self.is_port_allowed(port, 'tcp'):
@@ -143,18 +198,40 @@ class Firewalld(Firewall):
             if self.is_port_allowed(port=port):
                 settings.removePort(port, protocol)
 
-        self.zone.update(settings)
+        if old == settings:
+            return False
+
+        try:
+            self.zone.update(settings)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
+        return True
 
     def remove_service(self, service):
+        if (not self.is_service_allowed(service)):
+            return False
+
         settings = self.zone.getSettings()
-
-        if (service not in settings):
-            return
-
         settings.removeService(service)
-        self.zone.update(settings)
+
+        try:
+            self.zone.update(settings)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
+        return True
 
     def remove_masquerade(self):
+        if not self.is_masquerade_allowed():
+            return False
+
         settings = self.zone.getSettings()
         settings.setMasquerade(False)
-        self.zone.update(settings)
+
+        try:
+            self.zone.update(settings)
+        except dbus.DBusException, ex:
+            raise FirewallError(ex.message)
+
+        return True
