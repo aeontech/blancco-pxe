@@ -19,10 +19,10 @@ class systemd:
         return self._getManager().ReloadUnit(unit, 'fail')
 
     def enable(self, unit):
-        return self._getManager().EnableUnitFiles(unit, True)
+        return self._getManager().EnableUnitFiles([unit], False, False)
 
     def disable(self, unit):
-        return self._getManager().DisableUnitFiles(unit, True)
+        return self._getManager().DisableUnitFiles([unit], False)
 
     def exists(self, unit):
         try:
