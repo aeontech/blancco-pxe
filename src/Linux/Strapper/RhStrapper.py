@@ -95,3 +95,32 @@ class RhStrapper(LinuxStrapper):
                 return True
 
         return False
+
+    def _configure_interfaces(self):
+        super(self.__class__, self)._configure_interfaces()
+
+        basepath = '/etc/sysconfig/network-scripts/ifcfg-%s'
+
+        # Modify network files - corp
+        f = open(basepath % 'corp0', 'w')
+        f.write('DEVICE=corp0\n')
+        f.write('BOOTPROTO=dhcp\n')
+        f.write('DEFROUTE=yes\n')
+        f.write('ONBOOT=yes\n')
+        f.write('ZONE=corporate\n')
+        f.write('UUID=%s\n' % str(uuid.uuid4()))
+        f.close()
+
+        # Modify network files - pxe
+        f = open(basepath % 'pxe0', 'w')
+        f.write('DEVICE=pxe0\n')
+        f.write('BOOTPROTO=none\n')
+        f.write('DEFROUTE=no\n')
+        f.write('ONBOOT=yes\n')
+        f.write('IPADDR=%s\n' % _pxe.getIpAddress())
+        f.write('DNS1=%s\n'   % _pxe.getIpAddress())
+        f.write('PREFIX=%d\n' % _pxe.getCidrMask())
+        f.write('USERCTL=no\n')
+        f.write('ZONE=pxe\n')
+        f.write('UUID=%s\n' % str(uuid.uuid4()))
+        f.close()
