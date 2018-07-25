@@ -59,7 +59,14 @@ class LinuxStrapper(object):
 
     def _configure_interface_names(self):
         inter   = net.Interfaces.getEthernet()
-        options = ["%s %s" % (i.getName().ljust(8),i.getIpAddress() or "No IP Address") for i in inter]
+        options = []
+
+        # Compile options array
+        for i in inter:
+            iface  = i.getName().ljust(8)
+            ipAddr = i.getIpAddress() or "No IP Address"
+
+            options.append("%s %s" % (iface, ipAddr))
 
         extdesc = 'Blancco PXE server requires connection to your network. ' \
                   'Please specify through which interface we will connect.'
