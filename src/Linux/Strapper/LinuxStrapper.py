@@ -38,6 +38,9 @@ class LinuxStrapper(object):
         self._configure_interfaces()
         self._configure_firewall()
 
+        self.systemd.restart('network')
+        self.systemd.restart('firewalld')
+
         log.info("Configuring Packages...")
         self._configure_tftpd()
         self._configure_nginx()
