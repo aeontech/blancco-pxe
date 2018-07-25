@@ -40,7 +40,7 @@ class Firewalld(Firewall):
         return zone in self.get_zones()
 
     def get_zones(self):
-        return self.firewall.config().listZones()
+        return self.firewall.config().getZoneNames()
 
     def add_zone(self, name):
         if name in self.get_zones():
