@@ -13,7 +13,7 @@ class Firewalld(Firewall):
         self.set_zone(self.firewall.getDefaultZone())
 
     def refresh(self):
-        self.reload()
+        self.firewall.reload()
 
     def get_default_zone(self):
         return self.firewall.getDefaultZone()
