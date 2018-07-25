@@ -162,6 +162,11 @@ Please specify through which interface we will connect.
         self.firewall.add_zone('pxe')
         self.firewall.add_zone('corporate')
 
+        self.firewall.refresh()
+
+        if not self.firewall.set_default_zone('corporate'):
+            raise EnvironmentError('Couldn\'t set default zone')
+
         self.firewall.set_zone('pxe')
         self.firewall.add_interface('pxe0')
         self.firewall.allow_service('http')
@@ -173,6 +178,8 @@ Please specify through which interface we will connect.
         self.firewall.add_interface('corp0')
         self.firewall.allow_service('ssh')
         self.firewall.allow_masquerade()
+
+        self.firewall.refresh()
 
     def _configure_tftpd(self):
         path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
