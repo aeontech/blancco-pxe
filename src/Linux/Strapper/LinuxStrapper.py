@@ -30,7 +30,7 @@ class LinuxStrapper(object):
 
     @abc.abstractmethod
     def install_packages(self):
-        pass
+        raise NotImplementedError('%s::%s not implemented in child' % (self.__class__.__name__, 'install_packages'))
 
     def configure_packages(self):
         log.info("Configuring System...")
