@@ -119,16 +119,13 @@ class LinuxStrapper(object):
         f.close()
 
     def _configure_interfaces(self):
-        corp = self.corp_int
-        _pxe = self._pxe_int
-
-        if not _pxe.setIpAddress('192.168.100.1'):
+        if not self._pxe_int.setIpAddress('192.168.100.1'):
             raise EnvironmentError("Couldn't set PXE interface IP")
-        if not _pxe.setNetmask(24):
+        if not self._pxe_int.setNetmask(24):
             raise EnvironmentError("Couldn't set PXE interface Netmask")
 
-        corp.setUp()
-        _pxe.setUp()
+        self.corp_int.setUp()
+        self._pxe_int.setUp()
 
     def _configure_firewall(self):
         self.firewall.add_zone('pxe')
