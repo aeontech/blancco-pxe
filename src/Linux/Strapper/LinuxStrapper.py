@@ -55,6 +55,7 @@ class LinuxStrapper(object):
         sysctl.write('net.ipv4.ip_forward', 1)
         sysctl.write('net.ipv4.all.accept_redirects', 0)
         sysctl.write('net.ipv4.all.send_redirects', 0)
+        sysctl.write('net.ipv6.conf.all.disable_ipv6', 1)
 
     def _configure_interface_names(self):
         inter   = net.Interfaces.getEthernet()
