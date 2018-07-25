@@ -1,7 +1,7 @@
 #!/bin/bash
 
-YUM_CMD=$(which yum 2> /dev/null)
-APTGET_CMD=$(which apt-get 2> /dev/null)
+YUM_CMD=$(command -v yum 2> /dev/null)
+APTGET_CMD=$(command -v apt-get 2> /dev/null)
 
 BOLD="\e[1m"
 UNBOLD="\e[22m"
