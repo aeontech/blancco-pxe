@@ -162,12 +162,14 @@ class LinuxStrapper(object):
     def _configure_tftpd(self):
         path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/tftpd.conf', '/etc/xinetd.d/tftp')
+        os.mkdir('/srv/tftproot/')
         # chmod?
         # selinux? restorecon?
 
     def _configure_nginx(self):
         path = os.path.realpath(os.path.dirname(__file__) + "/../../..")
         copy(path + '/assets/Linux/nginx.conf', '/etc/nginx/nginx.conf')
+        os.mkdir('/srv/httproot/')
         # chmod?
         # selinux? restorecon?
 
