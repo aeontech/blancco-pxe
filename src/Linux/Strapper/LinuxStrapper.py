@@ -48,7 +48,7 @@ class LinuxStrapper(object):
         self._configure_dhcpd()
 
     def configure_startup(self):
-        for service in ['nginx', 'xinetd', 'dhcpd']:
+        for service in ['nginx', 'xinetd', 'dhcpd', 'dnsmasq']:
             self.systemd.enable("%s.service" % service)
             self.systemd.start ("%s.service" % service)
 
